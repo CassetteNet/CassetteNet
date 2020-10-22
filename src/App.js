@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import StartPage from './components/pages/StartPage';
 import PageFrame from './components/PageFrame';
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false); // set to true to show top/side bar
+  // TODO: use something like this later. For now, just set as a boolean.
+  // const [loggedIn, setLoggedIn] = useState(false);
+  const loggedIn = false;
 
   return (
     <div className="App">
@@ -13,7 +15,7 @@ function App() {
           <div className="App">
             <PageFrame invisible={!loggedIn} />
             <Switch>
-              <Route exact path="/" component={StartPage} />
+              <Route exact path="/" component={StartPage} /> {/* TODO: should redirect to dashboard when logged in */}
             </Switch>
           </div>
         </BrowserRouter>
