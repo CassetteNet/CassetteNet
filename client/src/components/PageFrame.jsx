@@ -9,7 +9,7 @@ import UserContext from '../contexts/UserContext';
 
 
 const drawerWidth = 240;
-const drawerBgColor = '#6C8995'
+const drawerBgColor = '#6C8995';
 
 const useStyles = makeStyles((theme) => ({
   root: {
