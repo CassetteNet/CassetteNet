@@ -6,7 +6,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: '70%',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#3E3285',
   },
   inline: {
     display: 'inline',
@@ -33,12 +33,38 @@ function InboxPage() {
   ]
 
   return (
-    <div>
+    <div style={{color: 'white'}}>
         <Grid container align="center" justify="center">
             <h1>Your messages</h1>
         </Grid>
         <Grid container align="center" justify="center">
             <List subheader={<li />} className={classes.root}>
+            <ListItem alignItems="flex-start">                
+            <ListItemText
+                style={{marginRight: '10%'}}
+                primary={
+                    <React.Fragment>
+                        From
+                    </React.Fragment>
+                }
+                />
+                <ListItemText
+                style={{marginRight: '10%'}}
+                primary={
+                    <React.Fragment>
+                        Message
+                    </React.Fragment>
+                }
+                />
+                <ListItemText
+                primary={
+                    <React.Fragment>
+                        Mixtape
+                    </React.Fragment>
+                }
+                />
+            </ListItem>
+            <hr />
                 {
                     sampleMessages.map((message) => {
                         return (
@@ -50,20 +76,19 @@ function InboxPage() {
                                             component="span"
                                             variant="body2"
                                             className={classes.inline}
-                                            color="textPrimary"
                                         >
                                             {message.sender}
                                             </Typography>
                                     </ListItemAvatar>
                                     <ListItemText
                                     style={{marginRight: '10%'}}
-                                    secondary={
+                                    primary={
                                         <React.Fragment>
                                         {message.message}
                                         </React.Fragment>
                                     }
                                     />
-                                    <img alt="mixtape_cover"></img>
+                                    <img style={{marginLeft: '10%'}} alt="mixtape_cover"></img>
                                 </ListItem>
                                 <Divider variant="inset" style={{marginRight: '10%'}} component="li" />
                             </div>
