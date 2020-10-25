@@ -16,26 +16,31 @@ const sampleMixtapes = [
     name: 'mixtape1',
     collaborators: ['user1, user2'],
     favorites: '50k',
+    cover: 'https://lh3.googleusercontent.com/proxy/7eEAgbTWh23DfrW43yeKQ3z8v9nCip-7giCYcAKGMAGDtoCJKvLWdkS-TnvToo6gztayXKU3EdyDiT_9vHepm98jkhSxD06Zhy2Y97WXl_6WxA_YO7fyRxTDRKcBuf46jYV5O6UjCCDQ',
   },
   {
     name: 'mixtape2',
     collaborators: ['user1, user2'],
     favorites: '10k',
+    cover: 'https://lh3.googleusercontent.com/proxy/7eEAgbTWh23DfrW43yeKQ3z8v9nCip-7giCYcAKGMAGDtoCJKvLWdkS-TnvToo6gztayXKU3EdyDiT_9vHepm98jkhSxD06Zhy2Y97WXl_6WxA_YO7fyRxTDRKcBuf46jYV5O6UjCCDQ',
   },
   {
     name: 'mixtape3',
     collaborators: ['user1, user2'],
     favorites: '10k',
+    cover: 'https://lh3.googleusercontent.com/proxy/7eEAgbTWh23DfrW43yeKQ3z8v9nCip-7giCYcAKGMAGDtoCJKvLWdkS-TnvToo6gztayXKU3EdyDiT_9vHepm98jkhSxD06Zhy2Y97WXl_6WxA_YO7fyRxTDRKcBuf46jYV5O6UjCCDQ',
   },
   {
     name: 'mixtape4',
     collaborators: ['user1, user2'],
     favorites: '10k',
+    cover: 'https://lh3.googleusercontent.com/proxy/7eEAgbTWh23DfrW43yeKQ3z8v9nCip-7giCYcAKGMAGDtoCJKvLWdkS-TnvToo6gztayXKU3EdyDiT_9vHepm98jkhSxD06Zhy2Y97WXl_6WxA_YO7fyRxTDRKcBuf46jYV5O6UjCCDQ',
   },
   {
     name: 'mixtape5',
     collaborators: ['user1, user2'],
     favorites: '10k',
+    cover: 'https://lh3.googleusercontent.com/proxy/7eEAgbTWh23DfrW43yeKQ3z8v9nCip-7giCYcAKGMAGDtoCJKvLWdkS-TnvToo6gztayXKU3EdyDiT_9vHepm98jkhSxD06Zhy2Y97WXl_6WxA_YO7fyRxTDRKcBuf46jYV5O6UjCCDQ',
   },
 ];
 
@@ -65,6 +70,17 @@ function MixtapeList(props) {
               ref={provided.innerRef}
               style={{padding: '10%', width: '70%'}}
             >
+              <ListItem>
+                <div style={{ marginRight: '10%' }}>
+                  <ListItemText>Name</ListItemText>
+                </div>
+                <ListItemText style={{ left:'20%', marginRight: '10%' }}>
+                  Collaborators
+                </ListItemText>
+                <ListItemText style={{ marginRight: '10%' }}>
+                  Favorites
+                </ListItemText>
+              </ListItem>
               {items.map((mixtape, index) => (
                 <Draggable
                   key={`item${index}`}
@@ -74,6 +90,7 @@ function MixtapeList(props) {
                   {(provided, snapshot) => (
                     // TODO: This list item should be a seperate component
                     <ListItem
+                      
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
@@ -82,11 +99,11 @@ function MixtapeList(props) {
                         provided.draggableProps.style
                       )}
                     >
-                      <div style={{ marginRight: '10%' }}>
-                        <img alt='mixtape_cover'></img>
+                      <div style={{left: '0', marginRight: '10%' }}>
+                        <img style={{width: '30%', height: '30%'}} src={mixtape.cover} alt='mixtape_cover'></img>
                         <ListItemText>{mixtape.name}</ListItemText>
                       </div>
-                      <ListItemText style={{ marginRight: '10%' }}>
+                      <ListItemText style={{ left:'20%', marginRight: '10%' }}>
                         {mixtape.collaborators}
                       </ListItemText>
                       <ListItemText style={{ marginRight: '10%' }}>
