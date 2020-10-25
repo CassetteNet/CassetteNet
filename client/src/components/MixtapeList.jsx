@@ -61,64 +61,62 @@ function MixtapeList(props) {
   };
 
   return (
-    <Grid container justify='center'>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId='droppable'>
-          {(provided) => (
-            <List
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              style={{padding: '10%', width: '70%'}}
-            >
-              <ListItem>
-                <div style={{ marginRight: '10%' }}>
-                  <ListItemText>Name</ListItemText>
-                </div>
-                <ListItemText style={{ left:'20%', marginRight: '10%' }}>
-                  Collaborators
-                </ListItemText>
-                <ListItemText style={{ marginRight: '10%' }}>
-                  Favorites
-                </ListItemText>
-              </ListItem>
-              {items.map((mixtape, index) => (
-                <Draggable
-                  key={`item${index}`}
-                  draggableId={`item${index}`}
-                  index={index}
-                >
-                  {(provided, snapshot) => (
-                    // TODO: This list item should be a seperate component
-                    <ListItem
-                      
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      style={getItemStyle(
-                        snapshot.isDragging,
-                        provided.draggableProps.style
-                      )}
-                    >
-                      <div style={{left: '0', marginRight: '10%' }}>
-                        <img style={{width: '30%', height: '30%'}} src={mixtape.cover} alt='mixtape_cover'></img>
-                        <ListItemText>{mixtape.name}</ListItemText>
-                      </div>
-                      <ListItemText style={{ left:'20%', marginRight: '10%' }}>
-                        {mixtape.collaborators}
-                      </ListItemText>
-                      <ListItemText style={{ marginRight: '10%' }}>
-                        {mixtape.favorites}
-                      </ListItemText>
-                    </ListItem>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </List>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </Grid>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId='droppable'>
+        {(provided) => (
+          <List
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            style={{width: '70%'}}
+          >
+            <ListItem>
+              <div style={{ marginRight: '10%' }}>
+                <ListItemText>Name</ListItemText>
+              </div>
+              <ListItemText style={{ left:'20%', marginRight: '10%' }}>
+                Collaborators
+              </ListItemText>
+              <ListItemText style={{ marginRight: '10%' }}>
+                Favorites
+              </ListItemText>
+            </ListItem>
+            {items.map((mixtape, index) => (
+              <Draggable
+                key={`item${index}`}
+                draggableId={`item${index}`}
+                index={index}
+              >
+                {(provided, snapshot) => (
+                  // TODO: This list item should be a seperate component
+                  <ListItem
+                    
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    style={getItemStyle(
+                      snapshot.isDragging,
+                      provided.draggableProps.style
+                    )}
+                  >
+                    <div style={{left: '0', marginRight: '10%' }}>
+                      <img style={{width: '30%', height: '30%'}} src={mixtape.cover} alt='mixtape_cover'></img>
+                      <ListItemText>{mixtape.name}</ListItemText>
+                    </div>
+                    <ListItemText style={{ left:'20%', marginRight: '10%' }}>
+                      {mixtape.collaborators}
+                    </ListItemText>
+                    <ListItemText style={{ marginRight: '10%' }}>
+                      {mixtape.favorites}
+                    </ListItemText>
+                  </ListItem>
+                )}
+              </Draggable>
+            ))}
+            {provided.placeholder}
+          </List>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 }
 
