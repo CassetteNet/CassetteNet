@@ -30,7 +30,7 @@ function App() {
                   <Route exact path="/" component={user.isGuest ? StartPage : DashboardPage} /> {/* TODO: should redirect to dashboard when logged in */}
                   <Route exact path="/login" component={LoginPage} />
                   <Route exact path="/atmosphere" component={AtmospherePage} />
-                  <Route exact path="/mixtape" component={ViewMixtapePage} />
+                  <Route exact path="/mixtape/:id" component={ViewMixtapePage} />
                   <Route exact path="/mymixtapes" component={MyMixtapesPage} />
                   <Route exact path="/inbox" component={InboxPage} />
                   <Route exact path="/NotFound" component={NotFoundPage}/>

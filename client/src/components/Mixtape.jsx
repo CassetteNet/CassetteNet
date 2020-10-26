@@ -23,7 +23,10 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
 function Mixtape(props) {
     const [songs, setSongs] = useState(sampleSongs);
-  
+
+    // :id url param, will be useful later
+    // const mixtapeId = props.id;
+
     const onDragEnd = (result) => {
       if (!result.destination) {
         return;

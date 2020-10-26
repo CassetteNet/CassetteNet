@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Fab, Grid, Paper } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 import Mixtape from '../Mixtape';
 
 function ViewMixtapePage(props) {
@@ -11,7 +11,7 @@ function ViewMixtapePage(props) {
             </Paper>
             <Grid container justify="center">
                 <Grid style={{backgroundColor: '#236067', overflow: 'auto', width: '90%', maxHeight: '80vh',}} container justify="center">
-                    <Mixtape />
+                    <Mixtape id={props.match.params.id} />
                 </Grid>
             </Grid>
         </div>
