@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { AppBar, Badge, Typography, InputBase, Divider, Drawer, Grid, List, IconButton, ListItem, ListItemIcon, ListItemText, Toolbar } from '@material-ui/core';
@@ -163,6 +163,13 @@ function PageFrame(props) {
   const [open, setOpen] = useState(false);
   const history = useHistory();
 
+  const playerRef = useRef(null);
+
+  setInterval(() => {
+    if (playerRef.current) 
+      localStorage.setItem('timestamp', playerRef.current.getCurrentTime());
+  }, 1000);
+
   // TODO: add setUser to destructuring when needed
     // Removed for now to avoid build warnings
   const { user, setUser } = useContext(UserContext);
@@ -172,6 +179,11 @@ function PageFrame(props) {
   const { currentSong } = useContext(CurrentSongContext);
 
   const { playing, setPlaying } = useContext(PlayingSongContext);
+
+  const handlePlayPause = () => {
+    setPlaying(!playing);
+    playerRef.current.seekTo(parseFloat(localStorage.getItem('timestamp')));
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -321,9 +333,9 @@ function onSuggestionsClearRequested() {
         </Drawer>
         <AppBar style={{ display: currentSong ? '' : 'none', top: 'auto', bottom: 0,}}>
           <Toolbar>
-            <ReactPlayer playing={playing} style={{display: 'none'}} url={`https://www.youtube.com/watch?v=${currentSong ? currentSong.song : ''}`} />
+            <ReactPlayer ref={playerRef} playing={playing} style={{display: 'none'}} url={`https://www.youtube.com/watch?v=${currentSong ? currentSong.song : ''}`} />
             <Grid className={classes.player} container justify="center">
-              <div onClick={() => setPlaying(!playing)}>
+              <div onClick={handlePlayPause}>
                 {playing ? <PauseIcon /> : <PlayIcon />}
               </div>
             </Grid>

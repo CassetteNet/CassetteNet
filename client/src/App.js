@@ -38,7 +38,7 @@ function App() {
   }
   const [currentSong, setCurrentSong] = useState(currentSongDefault);
   useEffect(() => {
-    localStorage.setItem('currentlyPlayingSong', JSON.stringify(currentSong));
+    localStorage.setItem('currentSong', JSON.stringify(currentSong));
   }, [JSON.stringify(currentSong)]);
 
 
