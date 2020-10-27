@@ -32,7 +32,6 @@ function ViewMixtapePage(props) {
                 <Grid style={{backgroundColor: '#236067', overflow: 'auto', width: '90%', maxHeight: '50vh',}} container justify="center">
                     <Mixtape id={props.match.params.id} />
                 </Grid>
-                <button onClick={() => setPlaying(!playing)}>Play</button>
                 <ReactPlayer style={{display: 'none'}} playing={playing} url={'https://www.youtube.com/watch?v=GT4IC9fgxiw'} />
             </Grid>
         </div>
