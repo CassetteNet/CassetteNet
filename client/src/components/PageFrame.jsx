@@ -5,8 +5,11 @@ import { AppBar, Badge, Typography, InputBase, Divider, Drawer, List, IconButton
 import { Search as SearchIcon, Language as AnonymousMixtapesIcon, Equalizer as AtmosphereSoundsIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Favorite as FavoritedMixtapesIcon, Mail as InboxIcon, PeopleAlt as FollowedUsersIcon, PersonAdd as SignUpIcon, MoodBad as NotFoundIcon } from '@material-ui/icons';
 import Autosuggest from 'react-autosuggest';
 import { useHistory } from 'react-router-dom';
+import ReactPlayer from 'react-player';
 import CassetteTapeIcon from './icons/CassetteTapeIcon';
 import UserContext from '../contexts/UserContext';
+import CurrentSongContext from '../contexts/CurrentSongContext';
+import PlayingSongContext from '../contexts/PlayingSongContext';
 
 
 const drawerWidth = 240;
@@ -160,6 +163,10 @@ function PageFrame(props) {
 
   const logout = () => {setUser({ isLoggedIn: false }); history.push('/');}
 
+  const { currentSong } = useContext(CurrentSongContext);
+
+  const { playing, setPlaying } = useContext(PlayingSongContext);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -306,6 +313,13 @@ function onSuggestionsClearRequested() {
                 </List>
             <Divider />
         </Drawer>
+        <AppBar style={{display: currentSong ? '' : 'none', top: 'auto', bottom: 0,}}>
+          <Toolbar>
+            <ReactPlayer playing={playing} style={{display: 'none'}} url={`https://www.youtube.com/watch?v=${currentSong ? currentSong.song : ''}`} />
+            
+          </Toolbar>
+        </AppBar>
+        
     </div>
   );
 }
