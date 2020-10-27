@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Checkbox, Fab, Grid, IconButton, Paper } from '@material-ui/core';
+import { Checkbox, Fab, Grid, IconButton, Paper, TextField } from '@material-ui/core';
 import Mixtape from '../Mixtape';
 import { getMixtape, getUsername } from '../../utils/api';
 import { ArrowBack as ArrowBackIcon, Edit as EditIcon } from '@material-ui/icons';
@@ -25,7 +25,7 @@ function ViewMixtapePage(props) {
             <br/>
             
             <Paper style={{padding: '1%', marginLeft: '5%', marginBottom: '5%', width: '50%'}}>
-                <h1>{mixtape.name || 'Mixtape Title'}</h1>
+                {isEditing ? <TextField value={mixtape.name} /> : <h1>{mixtape.name || 'Mixtape Title'}</h1>}
                 <h4>{`Created by ${getUsername(owner)} ${mixtape.songs.length} songs, XX mins`}</h4>
             </Paper>
             <Grid container justify="center">
