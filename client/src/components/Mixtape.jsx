@@ -62,6 +62,7 @@ function Mixtape(props) {
                   key={`item${index}`}
                   draggableId={`item${index}`}
                   index={index}
+                  isDragDisabled={!isEditing}
                 >
                   {(provided, snapshot) => (
                     // TODO: This list item should be a seperate component
