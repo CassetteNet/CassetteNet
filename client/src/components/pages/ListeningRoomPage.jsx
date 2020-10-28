@@ -140,7 +140,7 @@ class ListeningRoomPage extends Component {
                                 <Grid container xs={3}>
                                     <Grid item xs={12} style={{backgroundColor: 'white', height: '50%'}} >
                                         <Paper style={{backgroundColor: "#ACDCFF"}}>
-                                            <Typography alignItems="center" variant="h4">Listeners</Typography>
+                                            <Typography alignItems="center" variant="h4">Scoreboard</Typography>
                                         </Paper>
                                     </Grid>
                                     <Grid item xs={12} style={{backgroundColor: 'white', height: '50%'}} >
