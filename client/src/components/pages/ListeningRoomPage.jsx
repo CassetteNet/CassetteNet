@@ -105,12 +105,12 @@ class ListeningRoomPage extends Component {
                                     {/* TODO: remove backgroundColors. just there for now to help with development */}
                                     <Grid style={{height: '75vh'}} item xs={12}>
                                         <Grid container style={{height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                                            <Paper style={{ height: '80%', width: '95%', backgroundColor: '#6FE5FF'}}>
+                                            <Paper style={{ height: '90%', width: '95%', backgroundColor: '#6FE5FF'}}>
                                                 <Grid container style={{height: '90%', display: 'flex', justifyContent: 'center', marginTop: '5%' }}>
                                                     <Grid item xs={2} />
                                                     <Grid item xs={10}>
                                                         <Paper variant="outlined" style={{background: '#305B8D', color: 'white', height: '70%', width: '80%'}}>
-                                                            <Typography variant="h6">Select the game you want to play:</Typography>
+                                                            <Typography variant="h5">Select the game you want to play:</Typography>
                                                         </Paper>
                                                     <Grid item xs={2} />
                                                     </Grid>
