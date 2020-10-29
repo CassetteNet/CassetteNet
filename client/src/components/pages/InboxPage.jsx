@@ -85,26 +85,33 @@ function InboxPage() {
                             messages.map((message) => {
                                 return (
                                     <div>
-                                        <ListItem alignItems="flex-start">                
-                                            <ListItemAvatar style={{marginRight: '10%'}}>
-                                                <Avatar alt={message.sender} src="/static/images/avatar/1.jpg" />
-                                                <Typography
-                                                    component="span"
-                                                    variant="body2"
-                                                    className={classes.inline}
-                                                >
-                                                    {message.sender}
-                                                    </Typography>
-                                            </ListItemAvatar>
-                                            <ListItemText
-                                            style={{marginRight: '10%'}}
-                                            primary={
-                                                <React.Fragment>
-                                                {message.message}
-                                                </React.Fragment>
-                                            }
-                                            />
-                                            <img style={{marginLeft: '10%'}} alt="mixtape_cover"></img>
+                                        <ListItem alignItems="flex-start">
+                                            <Grid container>
+                                                <Grid item xs={4}>
+                                                    <ListItemAvatar>
+                                                        <Avatar alt={message.sender} src="/static/images/avatar/1.jpg" />
+                                                        <Typography
+                                                            component="span"
+                                                            variant="body2"
+                                                            className={classes.inline}
+                                                        >
+                                                            {message.sender}
+                                                            </Typography>
+                                                    </ListItemAvatar>
+                                                </Grid>
+                                                <Grid item xs={4}>
+                                                    <ListItemText
+                                                    primary={
+                                                        <React.Fragment>
+                                                        {message.message}
+                                                        </React.Fragment>
+                                                    }
+                                                    />
+                                                </Grid>
+                                                <Grid item xs={4}>
+                                                    <img style={{width: '20%'}} src="https://thumbs.dreamstime.com/b/retro-mix-tape-cover-illustration-retro-mix-tape-cover-illustration-old-school-music-art-182730287.jpg" alt="mixtape_cover"></img>
+                                                </Grid>
+                                            </Grid>
                                         </ListItem>
                                         <Divider variant="inset" style={{marginRight: '10%'}} component="li" />
                                     </div>
