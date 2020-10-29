@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { Grid, List, ListItem, ListItemText } from '@material-ui/core';
+import { Fab, Grid, List, ListItem, ListItemText } from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons';
 import { getUsername } from '../utils/api';
 
