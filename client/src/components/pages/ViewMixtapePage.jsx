@@ -16,7 +16,7 @@ function ViewMixtapePage(props) {
     const [isEditing, setIsEditing] = useState(false);
 
     return (
-        <div style={{paddingTop: '1em'}}>
+        <div>
             <IconButton color="secondary" aria-label="back"  onClick={() => { goBack() }}>
                 <ArrowBackIcon/>
             </IconButton>
@@ -24,7 +24,7 @@ function ViewMixtapePage(props) {
                 
             <br/>
             
-            <Paper style={{padding: '1%', marginLeft: '5%', marginBottom: '5%', width: '50%'}}>
+            <Paper style={{height: '7em', padding: '1%', marginLeft: '5%', marginBottom: '2%', width: '50%'}}>
                 {/* {isEditing ? <TextField value={mixtape.name} /> : <h1>{mixtape.name || 'Mixtape Title'}</h1>} */}
                 <Typography variant="h2">{mixtape.name}</Typography>
                 <h4>{`Created by ${getUsername(owner)} ${mixtape.songs.length} songs, XX mins`}</h4>
