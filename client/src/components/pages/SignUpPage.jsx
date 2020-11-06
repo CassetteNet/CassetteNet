@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button, Grid, IconButton, makeStyles, Typography } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import logo from '../../images/logo.png';
@@ -21,62 +21,65 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { userSignup } from '../../utils/api';
 
 function SignUpPage(props) {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleUsername = (e) => setUsername(e.target.value);
+  const handlePassword = (e) => setPassword(e.target.value);
+  const handleEmail = (e) => setEmail(e.target.value);
 
 
-    const CssTextField = withStyles({
-        root: {
-            '& label':{
-                color:'white'
+  const CssTextField = withStyles({
+      root: {
+          '& label':{
+              color:'white'
+          },
+      '& label.Mui-focused': {
+          color: 'black',
+          },
+          '& .MuiInput-underline:after': {
+              borderBottomColor: 'green',
             },
-        '& label.Mui-focused': {
-            color: 'black',
-            },
-            '& .MuiInput-underline:after': {
-                borderBottomColor: 'green',
-              },
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': {
-              borderColor: 'white',
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: 'black',
-            },
+        '& .MuiOutlinedInput-root': {
+          '& fieldset': {
+            borderColor: 'white',
+          },
+          '&.Mui-focused fieldset': {
+            borderColor: 'black',
           },
         },
-      })(TextField);
+      },
+    })(TextField);
 
-       
-    const colors = {
-        buttonContainer: '#0A1941',
-        loginButton: '#115628',
-        signUpButton: '#561111',
-        guestButton: '#6B6B6B',
-    }
-    const useStyles = makeStyles((theme) => ({
-        margin: {
-            margin: theme.spacing(1),
-          },
-        TextStyle:{
-            color:"white",
+      
+  const colors = {
+      buttonContainer: '#0A1941',
+      loginButton: '#115628',
+      signUpButton: '#561111',
+      guestButton: '#6B6B6B',
+  }
+  const useStyles = makeStyles((theme) => ({
+      margin: {
+          margin: theme.spacing(1),
         },
-        photo:{
-          height:'100px',
-          width:'100px',
-          marginLeft:'20px',
-          marginRight:'20px',
-        }
-      }));
+      TextStyle:{
+          color:"white",
+      },
+      photo:{
+        height:'100px',
+        width:'100px',
+        marginLeft:'20px',
+        marginRight:'20px',
+      }
+    }));
     const classes = useStyles();
     // TODO: add user to destructuring when needed
     // Removed for now to avoid build warnings
@@ -89,9 +92,7 @@ function SignUpPage(props) {
 
     //TODO: Possibly re-align fields
     return (
-      
-
-        <div  style={{ color: 'white', left:0}}>
+        <div style={{ color: 'white', left:0}}>
           
             <IconButton color="secondary" aria-label="back"  onClick={() => { goBack() }}>
                 <ArrowBackIcon/>
