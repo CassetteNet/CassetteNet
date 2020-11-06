@@ -92,11 +92,13 @@ async function getFavoritedMixtapes(_id) {
 }
 
 async function favoriteMixtape(mixtapeId) {
-    await axios.put(new URL(`/user/favoriteMixtape`, SERVER_ROOT_URL), { id: mixtapeId, withCredentials: true });
+    const favoritedMixtapes = await axios.put(new URL(`/user/favoriteMixtape`, SERVER_ROOT_URL), { id: mixtapeId, withCredentials: true });
+    return favoritedMixtapes.data;
 }
 
 async function unfavoriteMixtape(mixtapeId) {
-    await axios.put(new URL(`/user/favoriteMixtape`, SERVER_ROOT_URL), { id: mixtapeId, withCredentials: true });
+    const favoritedMixtapes = await axios.put(new URL(`/user/unfavoriteMixtape`, SERVER_ROOT_URL), { id: mixtapeId, withCredentials: true });
+    return favoritedMixtapes.data;
 }
 
 /**

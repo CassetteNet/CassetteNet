@@ -12,10 +12,12 @@ function FavoriteMixtapeButton(props) {
         } else {
             favoritedMixtapes = await favoriteMixtape(props.id);
         }
-        setUser({ favoritedMixtapes, ...user });
+        const newUser = { ...user};
+        newUser.favoritedMixtapes = favoritedMixtapes;
+        setUser(newUser);
     }
     return (
-        <FavoriteIcon onClick={() => favoriteButtonClickHandler()} style={{backgroundColor: user?.favoritedMixtapes?.includes(props.id) ? 'red' : ''}} /> 
+        <FavoriteIcon onClick={() => favoriteButtonClickHandler()} style={{color: user?.favoritedMixtapes.includes(props.id) ? 'red' : 'black'}} /> 
     )
 }
 
