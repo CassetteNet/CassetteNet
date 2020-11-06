@@ -12,7 +12,7 @@ import TextField from '@material-ui/core/TextField';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useHistory } from 'react-router-dom';
-import { getUser } from '../../utils/api';
+import { userLogin } from '../../utils/api';
 
 function LoginPage(props) {
     const colors = {
@@ -60,11 +60,11 @@ function LoginPage(props) {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const loginAsUser = () => {
-        const loggedInUser = getUser(username, password);
-        console.log(loggedInUser);
-        if (loggedInUser) setUser({isLoggedIn: true, isGuest: false, ...loggedInUser});
-        history.push('/');
+  const loginAsUser = async () => {
+    const loggedInUser = await userLogin(username, password);
+    if (loggedInUser) {
+      setUser({ isLoggedIn: true, isGuest: false, ...loggedInUser });
+      history.push('/');
     }
 
     const history = useHistory();
