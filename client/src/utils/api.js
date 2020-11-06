@@ -3,6 +3,8 @@ import { users } from '../testData/users.json';
 import { mixtapes } from '../testData/mixtapes.json';
 import { inboxMessages } from '../testData/inboxMessages.json';
 
+axios.defaults.withCredentials = true;
+
 
 let SERVER_ROOT_URL;
 try {
@@ -33,26 +35,28 @@ function getUsername(_id) {
  * 
  * @param {*} id id of the user we want to get my mixtapes of
  */
-function getMyMixtapes(_id) {
-    let user;
-    for (const usr of users) {
-        if (usr._id === _id) {
-            user = usr;
-            break;
-        }
-    }
-    if (!user) return [];
-    
-    const userMixtapes = [];
-    for (const mixtape of mixtapes) {
-        for (const collaborator of mixtape.collaborators) {
-            if (collaborator.user === user._id) {
-                userMixtapes.push(mixtape);
-                break;
-            }
-        }
-    }
-    return userMixtapes;
+async function getMyMixtapes(_id) {
+    // let user;
+    // for (const usr of users) {
+    //     if (usr._id === _id) {
+    //         user = usr;
+    //         break;
+    //     }
+    // }
+    // if (!user) return [];
+    const mixtapes = await axios.get(new URL('/user/mixtapes', SERVER_ROOT_URL), { withCredentials: true });
+    return mixtapes;
+
+    // const userMixtapes = [];
+    // for (const mixtape of mixtapes) {
+    //     for (const collaborator of mixtape.collaborators) {
+    //         if (collaborator.user === user._id) {
+    //             userMixtapes.push(mixtape);
+    //             break;
+    //         }
+    //     }
+    // }
+    // return userMixtapes;
 }
 
 /**
@@ -103,7 +107,8 @@ async function userSignup(email, username, password) {
 
 async function userLogin(username, password) {
     try {
-        return await axios.post(new URL('/user/login', SERVER_ROOT_URL), { username, password });
+        const user = await axios.post(new URL('/user/login', SERVER_ROOT_URL), { username, password });
+        return user.data;
     } catch(err) {
         console.log(err);
     }
