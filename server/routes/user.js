@@ -14,10 +14,15 @@ router.post('/signup', async (req, res) => {
 
     User.register(new User({ username, email, verified: false, admin: userCount === 0 }), password, (err, user) => {
         if (err) res.send(err); // TODO: error handling
-
+        else{
+            
         passport.authenticate('local')(req, res, () => res.send(user));
+        }
+        
     });
 });
+
+
 
 router.post('/login', passport.authenticate('local'), (req, res) => {
     const { username, uniqueId, _id } = req.user
@@ -32,7 +37,6 @@ router.post('/logout', (req, res) => {
     req.logout(); // passport method to clear jwt from user's cookie
     res.redirect('/');
 });
-
 
 // TODO: secure/authentication
 router.get('/mixtapes', async (req, res) => {
