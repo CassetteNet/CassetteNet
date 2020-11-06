@@ -23,7 +23,6 @@ function ViewMixtapePage(props) {
             setMixtape(updatedMixtape);
         }
         updateMixtape();
-     }, []);
     const owner = mixtape.collaborators.filter(c => c.permissions === 'owner').map(c => c.username)[0];
 
     const [isEditing, setIsEditing] = useState(false);

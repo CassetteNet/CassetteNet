@@ -24,7 +24,7 @@ router.post('/signup', async (req, res) => {
 
 
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
+router.post('/login', passport.authenticate('local'), (req, res) => 
     const { username, uniqueId, _id, favoritedMixtapes, followedUsers } = req.user
     res.json({
         _id,
