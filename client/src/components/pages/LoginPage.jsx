@@ -58,11 +58,12 @@ function LoginPage(props) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const loginAsUser = () => {
-    const loggedInUser = getUser(username, password);
-    console.log(loggedInUser);
-    if (loggedInUser) setUser({ isLoggedIn: true, isGuest: false, ...loggedInUser });
-    history.push('/');
+  const loginAsUser = async () => {
+    const loggedInUser = await getUser(username, password);
+    if (loggedInUser) {
+      setUser({ isLoggedIn: true, isGuest: false, ...loggedInUser });
+      history.push('/');
+    } 
   }
 
   const history = useHistory();
@@ -87,14 +88,14 @@ function LoginPage(props) {
 
         <Grid container spacing={1} alignItems="center" direction="column">
           <Grid item>
-            <CssTextField
+            <TextField
               className={classes.margin}
               onChange={(e) => handleUsername(e)}
               value={username}
               variant="outlined" label="Username" />
           </Grid>
           <Grid item>
-            <CssTextField
+            <TextField
               className={classes.margin}
               onChange={(e) => handlePassword(e)}
               value={password}
