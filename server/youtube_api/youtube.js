@@ -1,8 +1,10 @@
+const axios = require('axios');
 const { google } = require('googleapis');
 const youtube = google.youtube({
     version: 'v3',
     auth: process.env.YOUTUBE_API_KEY,
 });
+
 
 async function searchPlaylist(searchQuery, maxResults) {
     try {
@@ -20,13 +22,20 @@ async function searchPlaylist(searchQuery, maxResults) {
 
 async function getPlaylistVideos(playlistId) {
     try {
-        const result = await youtube.search.list({
-            part: 'id,snippet',
+        const result = await youtube.playlistItems.list({
+            part: 'snippet',
             playlistId,
-            type: 'playlistItems',
-            topicId: 'Music'
+            type: 'video',
         });
-        return result.data.items;
+        const playlist = await youtube.playlists.list({
+            part: 'snippet',
+            id: playlistId
+        });
+        const title = playlist.data.items[0].snippet.title;
+        return {
+            title,
+            items: result.data.items,
+        };
     } catch(err) {
         console.log(err);
     }
@@ -49,6 +58,4 @@ async function searchVideo(searchQuery, maxResults) {
 
 module.exports = {
     getPlaylistVideos,
-    searchPlaylist,
-    searchVideo,
 }
