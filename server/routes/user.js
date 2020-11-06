@@ -18,7 +18,11 @@ router.post('/signup', async (req, res) => {
 });
 
 router.post('/login', passport.authenticate('local'), (req, res) => {
-    res.status(200).send();
+    const { username, uniqueId } = req.user
+    res.json({
+        username,
+        uniqueId, // convert number to base36 to get alphanumeric id
+    });
 });
 
 router.post('/logout', (req, res) => {

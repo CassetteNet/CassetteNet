@@ -97,7 +97,7 @@ function getInboxMessages(_id) {
 async function userSignup(email, username, password) {
     try {
         await axios.post(new URL('/user/signup', SERVER_ROOT_URL), { email, username, password });
-    } catch(err) {
+    } catch(err) { // TODO: error handling
         console.log(err);
     }
 }
