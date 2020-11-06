@@ -5,7 +5,6 @@ const youtube = google.youtube({
     auth: process.env.YOUTUBE_API_KEY,
 });
 
-
 async function searchPlaylist(searchQuery, maxResults) {
     try {
         const result = await youtube.search.list({
@@ -58,4 +57,6 @@ async function searchVideo(searchQuery, maxResults) {
 
 module.exports = {
     getPlaylistVideos,
+    searchPlaylist,
+    searchVideo,
 }

@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useHistory } from 'react-router-dom';
-import { getUser } from '../../utils/api';
+import { userLogin } from '../../utils/api';
 
 function LoginPage(props) {
   const colors = {
@@ -59,33 +59,34 @@ function LoginPage(props) {
   const [password, setPassword] = useState('');
 
   const loginAsUser = async () => {
-    const loggedInUser = await getUser(username, password);
+    const loggedInUser = await userLogin(username, password);
     if (loggedInUser) {
       setUser({ isLoggedIn: true, isGuest: false, ...loggedInUser });
       history.push('/');
-    } 
+    }
+    else{
+      //TODO: turn this into a dialog box
+      alert("Incorrect Username or password!");
+    }
   }
 
   const history = useHistory();
-  const goBack = () => { history.push('/') }
+  const goBack = () => history.push('/');
 
   const handleUsername = (e) => setUsername(e.target.value);
   const handlePassword = (e) => setPassword(e.target.value);
 
   return (
     <div style={{ color: 'white', left: 0 }}>
-
-      <IconButton color="secondary" aria-label="back" onClick={() => { goBack() }}>
+      <IconButton color="secondary" aria-label="back" onClick={goBack}>
         <ArrowBackIcon />
       </IconButton>
       <br />
-
       <br />
       <br />
       <Typography align="center" variant="h3">Log In
       </Typography>
       <div className={classes.margin}>
-
         <Grid container spacing={1} alignItems="center" direction="column">
           <Grid item>
             <TextField

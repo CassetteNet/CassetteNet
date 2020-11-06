@@ -9,7 +9,7 @@ const passport = require('passport');
 const userRoute = require('./routes/user');
 const adminRoute = require('./routes/admin');
 
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://root:password@localhost:27017', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017', { useNewUrlParser: true, useUnifiedTopology: true });
 
 const app =  express();
 
@@ -17,7 +17,11 @@ app.use(cors()); // TODO: figure out where/if this is actually needed. for now, 
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(session({ secret: 'secret', resave: false, saveUninitialized: false  }));
+app.use(session({
+    secret: process.env.NODE_ENV === 'production' ? process.env.JWT_SECRET : 'secret',
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize()); 
 app.use(passport.session()); 
 
