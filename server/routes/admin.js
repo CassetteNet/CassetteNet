@@ -8,7 +8,8 @@ const router = express.Router();
 // TODO: secure this route
 router.post('/insertTestData', async (req, res) => {
     const { inboxMessages, mixtapes, users } = await generateTestData();
-    await Promise.all([User.insertMany(users), InboxMessage.insertMany(inboxMessages), Mixtape.insertMany(mixtapes)]);
+    await Promise.all([users.map(user => User.register({ username: user.username, email: user.email }, user.password)), InboxMessage.insertMany(inboxMessages), Mixtape.insertMany(mixtapes)]);
+    
     res.json({
         inboxMessages,
         mixtapes,
