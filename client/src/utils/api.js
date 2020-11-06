@@ -63,13 +63,13 @@ async function getMyMixtapes(_id) {
  * 
  * @param {*} _id mixtape _id
  */
-function getMixtape(_id) {
-    for (const mixtape of mixtapes) {
-        if (mixtape._id === _id) {
-            return mixtape;
-        }
-    }
-    return null;
+async function getMixtape(_id) {
+    const mixtape = await axios.get(new URL(`/mixtape/${_id}`, SERVER_ROOT_URL));
+    return mixtape.data;
+}
+
+async function updateMixtape(mixtape) {
+    await axios.put(new URL(`/mixtape/${mixtape._id}`, SERVER_ROOT_URL), { mixtape });
 }
 
 /**
@@ -124,6 +124,7 @@ export {
     getMyMixtapes,
     getFavoritedMixtapes,
     getInboxMessages,
+    updateMixtape,
     userLogin,
     userLogout,
     userSignup
