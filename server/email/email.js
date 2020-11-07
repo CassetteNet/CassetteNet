@@ -8,7 +8,7 @@ const verificationEmailTemplate = fs.readFileSync(path.join(__dirname, 'verifica
 const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
 
 const sendVerificationEmail = async (recipient, verificationToken) => {
-    const verficationUrl = `https://cassettenet.netlify.app/user/verify/${verificationToken}`;
+    const verficationUrl = `https://cassettenet.netlify.app/verify/${verificationToken}`;
     const emailBody = ejs.render(verificationEmailTemplate, { verficationUrl });
     const data = {
         from: `verify@${process.env.MAILGUN_DOMAIN}`,

@@ -46,6 +46,16 @@ router.post('/logout', (req, res) => {
     
 });
 
+router.put('/verify', async (req, res) => {
+    const { token } = req.body;
+    try {
+        await User.updateOne({ token }, { verified: true });
+        res.send('user verified');
+    } catch (err) {
+        res.status(500).send(err)
+    }
+});
+
 // get a user's mixtapes
 // TODO: secure/authentication
 router.get('/mixtapes', async (req, res) => {
