@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const crypto = require('crypto');
 const { Mixtape, User } = require('../models');
 const { sendVerificationEmail } = require('../email/email');
 
@@ -10,12 +11,17 @@ router.post('/signup', async (req, res) => {
     // this new user should be an admin if there are 0 users currently
     const userCount = await User.estimatedDocumentCount();
 
-    User.register(new User({ username, email, verified: false, admin: userCount === 0 }), password, async (err, user) => {
+    // generate email verification token
+    const token = crypto.randomBytes(64).toString('hex');
+
+    User.register(new User({ username, email, token, verified: false, admin: userCount === 0 }), password, async (err, user) => {
         if (err) return res.status(500).send(err); // TODO: error handling
-        try {
-            await sendVerificationEmail(email);
-        } catch(err) {
-            console.log(err); // TODO: error handling    
+        if (process.env.NODE_ENV === 'production') { // only send email in production deployment (i.e. heroku)
+            try {
+                await sendVerificationEmail(email, token);
+            } catch(err) {
+                console.log(err); // TODO: error handling    
+            }
         }
         passport.authenticate('local')(req, res, () => res.send(user));
     });
