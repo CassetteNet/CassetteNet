@@ -23,7 +23,7 @@ function ViewMixtapePage(props) {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(false);
 
-    const [uploadCoverImagePopup, setUploadCoverImagePopup] = useState(true);
+    const [uploadCoverImagePopup, setUploadCoverImagePopup] = useState(false);
     const [coverImageUrl, setCoverImageUrl] = useState(null);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ function ViewMixtapePage(props) {
                 {/* {isEditing ? <TextField value={mixtape.name} /> : <h1>{mixtape.name || 'Mixtape Title'}</h1>} */}
                 <Grid style={{height: '100%', width: '100%'}} container>
                     <Grid style={{height: '100%', width: '100%'}} xs={1} item>
-                        <img style={{width: '80%', height: '100%', objectFit: 'contain'}} src={coverImageUrl ? coverImageUrl : ''} />
+                        <img onClick={() => setUploadCoverImagePopup(true)} style={{cursor: 'pointer', width: '80%', height: '100%', objectFit: 'contain'}} src={coverImageUrl ? coverImageUrl : ''} />
                     </Grid>
                     <Grid xs={10} item>
                         <Typography variant="h4">{mixtape.name}</Typography>
