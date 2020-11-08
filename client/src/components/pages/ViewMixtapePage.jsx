@@ -46,6 +46,8 @@ function ViewMixtapePage(props) {
                     </Grid>
                     <Grid xs={10} item>
                         <Typography variant="h4">{mixtape.name}</Typography>
+                        <br />
+                        <Typography variant="h7" style={{ display: 'inline-block' }}>{`Created by ${owner} ${mixtape.songs.length} songs, XX mins`}</Typography>
                     </Grid>
                     <Grid xs={1} item>
                         <Button startIcon={<EditIcon />} style={{ position: 'absolute' }} variant="contained">Change Mixtape Name</Button>
@@ -56,7 +58,7 @@ function ViewMixtapePage(props) {
 
 
                 <div>
-                    <h4 style={{ display: 'inline-block' }}>{`Created by ${owner} ${mixtape.songs.length} songs, XX mins`}</h4>
+                    
                     <div style={{ display: 'inline-block', float: 'right' }}>
                         <FavoriteMixtapeButton id={props.match.params.id} style={{ margin: '7px' }} />
                         <CommentIcon style={{ margin: '10px' }} />
