@@ -156,6 +156,11 @@ async function uploadFile(file, endpoint) {
     await axios.put(new URL(endpoint, SERVER_ROOT_URL), formData);
 }
 
+function getMixtapeCoverImageUrl(mixtapeId) {
+    console.log(new URL(`/mixtape/${mixtapeId}/coverImage`, SERVER_ROOT_URL).href)
+    return new URL(`/mixtape/${mixtapeId}/coverImage`, SERVER_ROOT_URL).href;
+}
+
 export {
     createMixtape,
     deleteMixtape,
@@ -163,6 +168,7 @@ export {
     unfavoriteMixtape,
     getUsername,
     getMixtape,
+    getMixtapeCoverImageUrl,
     getMyMixtapes,
     getFavoritedMixtapes,
     getInboxMessages,

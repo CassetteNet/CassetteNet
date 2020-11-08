@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Button, Box, Checkbox, Fab, Grid, IconButton, Paper, TextField, Typography } from '@material-ui/core';
 import Mixtape from '../Mixtape';
 import FavoriteMixtapeButton from '../FavoriteMixtapeButton';
-import { getMixtape, getUsername } from '../../utils/api';
+import { getMixtape, getMixtapeCoverImageUrl } from '../../utils/api';
 import { Comment as CommentIcon, Share as ShareIcon, ArrowBack as ArrowBackIcon, Edit as EditIcon } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
-import ReactPlayer from 'react-player';
 import MixtapeCoverImageUploadModal from '../modals/MixtapeCoverImageUploadModal';
+
 
 function ViewMixtapePage(props) {
     const history = useHistory();
@@ -17,24 +17,27 @@ function ViewMixtapePage(props) {
         collaborators: [],
         songs: [],
     });
-    console.log(props.match.params.id)
-    useEffect(() => {
-        async function updateMixtape() {
-            const updatedMixtape = await getMixtape(props.match.params.id);
-            setMixtape(updatedMixtape);
-        }
-        updateMixtape();
-    }, []);
+
     const owner = mixtape.collaborators.filter(c => c.permissions === 'owner').map(c => c.username)[0];
 
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(false);
 
     const [uploadCoverImagePopup, setUploadCoverImagePopup] = useState(true);
+    const [coverImageUrl, setCoverImageUrl] = useState(null);
+
+    useEffect(() => {
+        async function updateMixtape() {
+            const updatedMixtape = await getMixtape(props.match.params.id);
+            setMixtape(updatedMixtape);
+            setCoverImageUrl(getMixtapeCoverImageUrl(updatedMixtape._id));
+        }
+        updateMixtape();
+    }, []);
 
     return (
         <div>
-            <MixtapeCoverImageUploadModal mixtape={mixtape} open={uploadCoverImagePopup} setOpen={setUploadCoverImagePopup} />
+            <MixtapeCoverImageUploadModal coverImageUrl={coverImageUrl} setCoverImageUrl={setCoverImageUrl} mixtape={mixtape} setMixtape={setMixtape} open={uploadCoverImagePopup} setOpen={setUploadCoverImagePopup} />
             <IconButton color="secondary" aria-label="back" onClick={() => { goBack() }}>
                 <ArrowBackIcon />
             </IconButton>
@@ -46,7 +49,7 @@ function ViewMixtapePage(props) {
                 {/* {isEditing ? <TextField value={mixtape.name} /> : <h1>{mixtape.name || 'Mixtape Title'}</h1>} */}
                 <Grid style={{height: '100%', width: '100%'}} container>
                     <Grid style={{height: '100%', width: '100%'}} xs={1} item>
-                        <img style={{width: '80%', height: '100%', objectFit: 'contain'}} src="https://media.istockphoto.com/vectors/cassette-with-retro-label-as-vintage-object-for-80s-revival-mix-tape-vector-id1034671212?k=6&m=1034671212&s=612x612&w=0&h=IeD4uDiHPMlgafytixF-B3F-rdDXwCJ_DMnlR5fkuXg=" />
+                        <img style={{width: '80%', height: '100%', objectFit: 'contain'}} src={coverImageUrl ? coverImageUrl : ''} />
                     </Grid>
                     <Grid xs={10} item>
                         <Typography variant="h4">{mixtape.name}</Typography>

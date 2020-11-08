@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Backdrop, Modal, Fade, Grid, Typography, Table, Button } from '@material-ui/core';
+import { Backdrop, Modal, Fade, Grid, Typography, Button } from '@material-ui/core';
 import { blueGrey } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 import { DropzoneArea } from 'material-ui-dropzone';
@@ -15,12 +15,13 @@ const useStyles = makeStyles((theme) => ({
 
 function MixtapeCoverImageUploadModal(props) {
     const classes = useStyles();
-    const { mixtape, open, setOpen } = props;
+    const { mixtape, setMixtape, coverImageUrl, setCoverImageUrl, open, setOpen } = props;
     const [file, setFile] = useState(null);
 
     const uploadImage = async () => {
-        console.log(file);
-        await uploadFile(file, `/mixtape/${mixtape._id}/uploadCoverImage`);
+        await uploadFile(file, `/mixtape/${mixtape._id}/coverImage`);
+        setCoverImageUrl(null);
+        setCoverImageUrl(coverImageUrl);
     }
 
     return (
