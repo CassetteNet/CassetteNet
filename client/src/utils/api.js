@@ -150,6 +150,12 @@ async function userVerifyAccount(token) {
     await axios.put(new URL('/user/verify', SERVER_ROOT_URL), { token });
 }
 
+async function uploadFile(file, endpoint) {
+    const formData = new FormData();
+    formData.append('coverImage', file);
+    await axios.put(new URL(endpoint, SERVER_ROOT_URL), formData);
+}
+
 export {
     createMixtape,
     deleteMixtape,
@@ -166,4 +172,5 @@ export {
     userLogout,
     userSignup,
     userVerifyAccount,
+    uploadFile,
 };

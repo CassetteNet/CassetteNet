@@ -6,6 +6,7 @@ import { getMixtape, getUsername } from '../../utils/api';
 import { Comment as CommentIcon, Share as ShareIcon, ArrowBack as ArrowBackIcon, Edit as EditIcon } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import ReactPlayer from 'react-player';
+import MixtapeCoverImageUploadModal from '../modals/MixtapeCoverImageUploadModal';
 
 function ViewMixtapePage(props) {
     const history = useHistory();
@@ -29,8 +30,11 @@ function ViewMixtapePage(props) {
     const [isEditing, setIsEditing] = useState(false);
     const [editTitle, setEditTitle] = useState(false);
 
+    const [uploadCoverImagePopup, setUploadCoverImagePopup] = useState(true);
+
     return (
         <div>
+            <MixtapeCoverImageUploadModal mixtape={mixtape} open={uploadCoverImagePopup} setOpen={setUploadCoverImagePopup} />
             <IconButton color="secondary" aria-label="back" onClick={() => { goBack() }}>
                 <ArrowBackIcon />
             </IconButton>
