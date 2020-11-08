@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Button, Box, Checkbox, Fab, Grid, IconButton, Paper, TextField, Typography } from '@material-ui/core';
+import { Button, Box, Checkbox, Fab, Grid, IconButton, Paper, TextField, Typography } from '@material-ui/core';
 import Mixtape from '../Mixtape';
 import FavoriteMixtapeButton from '../FavoriteMixtapeButton';
 import { getMixtape, getUsername } from '../../utils/api';
@@ -31,39 +31,41 @@ function ViewMixtapePage(props) {
 
     return (
         <div>
-            <IconButton color="secondary" aria-label="back"  onClick={() => { goBack() }}>
-                <ArrowBackIcon/>
+            <IconButton color="secondary" aria-label="back" onClick={() => { goBack() }}>
+                <ArrowBackIcon />
             </IconButton>
-            <br/>
-                
-            <br/>
-            
-            <Paper style={{height: '7em', padding: '1%', marginLeft: '5%', marginBottom: '2%', width: '70%'}}>
+            <br />
+
+            <br />
+
+            <Paper style={{ height: '7em', padding: '1%', marginLeft: '5%', marginBottom: '2%', width: '70%' }}>
                 {/* {isEditing ? <TextField value={mixtape.name} /> : <h1>{mixtape.name || 'Mixtape Title'}</h1>} */}
-                <Grid container>
-                    <Grid sz={4}>
-                        
-                <Typography variant="h4">{mixtape.name}</Typography>
+                <Grid style={{height: '100%', width: '100%'}} container>
+                    <Grid style={{height: '100%', width: '100%'}} xs={1} item>
+                        <img style={{width: '80%', height: '100%', objectFit: 'contain'}} src="https://media.istockphoto.com/vectors/cassette-with-retro-label-as-vintage-object-for-80s-revival-mix-tape-vector-id1034671212?k=6&m=1034671212&s=612x612&w=0&h=IeD4uDiHPMlgafytixF-B3F-rdDXwCJ_DMnlR5fkuXg=" />
                     </Grid>
-                    <Grid sz={1}>
-                    <Button startIcon={<EditIcon />}  style={{position: 'absolute'}} variant="contained">Change Mixtape Name</Button>
+                    <Grid xs={10} item>
+                        <Typography variant="h4">{mixtape.name}</Typography>
                     </Grid>
-                
+                    <Grid xs={1} item>
+                        <Button startIcon={<EditIcon />} style={{ position: 'absolute' }} variant="contained">Change Mixtape Name</Button>
+                    </Grid>
+
 
                 </Grid>
-                
-                
+
+
                 <div>
-                    <h4 style={{display: 'inline-block'}}>{`Created by ${owner} ${mixtape.songs.length} songs, XX mins`}</h4>
-                    <div style={{display: 'inline-block', float: 'right'}}>
-                        <FavoriteMixtapeButton id={props.match.params.id} style={{margin: '7px'}}/> 
-                        <CommentIcon style={{margin: '10px'}}/> 
-                        <ShareIcon style={{margin: '10px'}}/>
+                    <h4 style={{ display: 'inline-block' }}>{`Created by ${owner} ${mixtape.songs.length} songs, XX mins`}</h4>
+                    <div style={{ display: 'inline-block', float: 'right' }}>
+                        <FavoriteMixtapeButton id={props.match.params.id} style={{ margin: '7px' }} />
+                        <CommentIcon style={{ margin: '10px' }} />
+                        <ShareIcon style={{ margin: '10px' }} />
                     </div>
                 </div>
             </Paper>
             <Grid container justify="center">
-                    <Mixtape enableEditing={true} isEditing={isEditing} setIsEditing={setIsEditing} mixtape={mixtape} setMixtape={setMixtape} />
+                <Mixtape enableEditing={true} isEditing={isEditing} setIsEditing={setIsEditing} mixtape={mixtape} setMixtape={setMixtape} />
             </Grid>
         </div>
     )
