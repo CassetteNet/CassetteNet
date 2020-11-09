@@ -144,12 +144,16 @@ function Player(props) {
     const handleSetLoop = () => {
       const loopState = loop;
       setLoop(!loopState);
-      setShuffle(loopState);
+      if (!loopState) {
+        setShuffle(false);
+      }
     }
 
     const handleSetShuffle = () => {
       const shuffleState = shuffle;
-      setLoop(shuffleState);
+      if (!shuffleState) {
+        setLoop(false);
+      }
       setShuffle(!shuffleState);
     }
 
