@@ -1,13 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppBar, Box, Button, Grid, Tab, Tabs, Typography, makeStyles, IconButton } from '@material-ui/core';
-import indigo from '@material-ui/core/colors/indigo';
-import blueGrey from '@material-ui/core/colors/blueGrey';
-import { getUser, getUserProfilePictureUrl } from '../../utils/api';
-import { users } from '../../testData/users.json'
-import pfp from '../../images/bottle_pfp.jpg';
+import { blueGrey, indigo } from '@material-ui/core/colors';
 import ReactRoundedImage from "react-rounded-image";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
+import { getUser, getUserProfilePictureUrl, queryForMixtapes } from '../../utils/api';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -75,16 +72,13 @@ const MixtapeRows = ({ mixtapes }) => (
         fontSize: 12,
       }}>
         <Box style={{ width: "33%", display: 'flex', justifyContent: "center" }}> {mixtape.name} </Box>
-        <Box style={{ width: "33%", display: 'flex', justifyContent: "center" }}> {mixtape.collaborators} </Box>
+        <Box style={{ width: "33%", display: 'flex', justifyContent: "center" }}> {mixtape.collaborators.map(collaborator => collaborator.username).toString()} </Box>
         <Box style={{ width: "33%", display: 'flex', justifyContent: "center" }}> {mixtape.favorites} </Box>
 
       </Box>
     ))}
   </>
 );
-
-//var favorites = users[1].favoritedMixtapes;
-
 
 
 function ViewUserPage(props) {
@@ -109,11 +103,15 @@ function ViewUserPage(props) {
 
   const [user, setUser] = useState({});
 
+  const [createdMixtapes, setCreatedMixtapes] = useState([]);
+
   useEffect(() => {
     async function getUserInfo() {
         if (id) {
           const userInfo = await getUser(id);
           setUser(userInfo);
+          const userCreatedMixtapes = await queryForMixtapes({ 'collaborators.user': id, 'collaborators.permissions': 'owner' });
+          setCreatedMixtapes(userCreatedMixtapes);
         }
     }
     getUserInfo();
@@ -204,7 +202,7 @@ function ViewUserPage(props) {
               marginTop: "5px",
               backgroundColor: colors.tabsContainer
             }}>
-              <MixtapeRows mixtapes={theirMixtapes} />
+              <MixtapeRows mixtapes={createdMixtapes} />
             </Box>
           </TabPanel>
           <TabPanel value={value} index={1}>

@@ -40,6 +40,10 @@ router.get('/searchMixtapes', async (req, res) => {
     } else {
         mixtapes = mixtapes.filter(mixtape => mixtape.isPublic);
     }
+    for (const mixtape of mixtapes) {
+        const favoriteCount = (await User.find({ favoritedMixtapes: mixtape._id }).lean()).length;
+        mixtape.favorites = favoriteCount;
+    }
     res.send(mixtapes);
 });
 

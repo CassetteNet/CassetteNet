@@ -152,6 +152,11 @@ async function getUser(userId) {
     return user.data;
 }
 
+async function queryForMixtapes(query) {
+    const mixtapes = await axios.get(new URL(`/mixtape/searchMixtapes`, SERVER_ROOT_URL).href, { params: query });
+    return mixtapes.data;
+}
+
 export {
     createMixtape,
     deleteMixtape,
@@ -165,6 +170,7 @@ export {
     getMyMixtapes,
     getFavoritedMixtapes,
     getInboxMessages,
+    queryForMixtapes,
     songSearch,
     getSongDuration,
     updateMixtape,
