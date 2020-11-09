@@ -3,7 +3,7 @@ import { Card, Grid } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 import CurrentSongContext from '../contexts/CurrentSongContext';
 import PlayingSongContext from '../contexts/PlayingSongContext';
-import { Direction, PlayerIcon, Slider } from 'react-player-controls';
+import { Direction, FormattedTime, PlayerIcon, Slider } from 'react-player-controls';
 import { debounce } from 'lodash';
  
 const WHITE_SMOKE = '#eee'
@@ -146,12 +146,18 @@ function Player(props) {
     return (
         <div style={{height: '100px'}}>
             <Grid style={{margin: '10px 0'}} container justify="center">
+              <div style={{color: 'black', marginRight: '20px'}}>
+                <FormattedTime numSeconds={currentTime} />
+              </div>
                 <ProgressBar
                 isEnabled
                 direction={Direction.HORIZONTAL}
                 value={currentSong?.duration ? (currentTime / currentSong.duration) : 0}
                 onChange={value => seek(value)}
                 />
+              <div style={{color: 'black', marginRight: '20px'}}>
+                <FormattedTime numSeconds={(currentSong.duration - currentTime) * -1} />
+              </div>
             </Grid>
             <Grid style={{margin: '10px 0'}} container justify="center">
                 <PlayerIcon.Previous onClick={handlePrevSong} width={32} height={32} style={{ marginRight: 32 }} />
