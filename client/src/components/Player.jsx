@@ -1,10 +1,10 @@
 import React, { useContext, useRef, useState } from 'react';
-import { Card, Grid } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
+import { Shuffle as ShuffleIcon } from '@material-ui/icons';
 import ReactPlayer from 'react-player';
 import CurrentSongContext from '../contexts/CurrentSongContext';
 import PlayingSongContext from '../contexts/PlayingSongContext';
 import { Direction, FormattedTime, PlayerIcon, Slider } from 'react-player-controls';
-import { debounce } from 'lodash';
  
 const WHITE_SMOKE = '#eee'
 const GRAY = '#878c88'
@@ -97,6 +97,8 @@ function Player(props) {
     const { currentSong, setCurrentSong } = useContext(CurrentSongContext);
 
     const { playing, setPlaying } = useContext(PlayingSongContext);
+
+    const [shuffle, setShuffle] = useState(false);
   
     const handlePlay = () => {
       setPlaying(true);
@@ -113,7 +115,9 @@ function Player(props) {
     const handleNextSong = () => {
       setPlaying(false);
       const newCurrentSong = { ...currentSong };
-      if (currentSong.index === currentSong.mixtape.songs.length - 1) {
+      if (shuffle) {
+        newCurrentSong.index = Math.floor(Math.random() * currentSong.mixtape.songs.length);
+      } else if (currentSong.index === currentSong.mixtape.songs.length - 1) {
         newCurrentSong.index = 0;
       } else {
         newCurrentSong.index = currentSong.index + 1;
@@ -125,7 +129,9 @@ function Player(props) {
     const handlePrevSong = () => {
       setPlaying(false);
       const newCurrentSong = { ...currentSong };
-      if (currentSong.index === 0) {
+      if (shuffle) {
+        newCurrentSong.index = Math.floor(Math.random() * currentSong.mixtape.songs.length);
+      } else if (currentSong.index === 0) {
         newCurrentSong.index = currentSong.mixtape.songs.length - 1;
       } else {
         newCurrentSong.index = currentSong.index - 1;
@@ -166,9 +172,12 @@ function Player(props) {
                 <PlayerIcon.Play onClick={handlePlay} width={32} height={32} style={{ marginRight: 32 }} />
                 }
                 <PlayerIcon.Next onClick={handleNextSong} width={32} height={32} style={{ marginRight: 32 }} />
+                <div style={{color: shuffle ? 'red' : 'black', marginRight: '20px'}}>
+                  <ShuffleIcon onClick={() => setShuffle(!shuffle)} />
+                </div>
             </Grid>
             
-            <ReactPlayer ref={playerRef} playing={playing} style={{display: 'none'}} url={`https://www.youtube.com/watch?v=${currentSong?.mixtape?.songs ? currentSong.mixtape.songs[currentSong.index].id : ''}`} />
+            <ReactPlayer onEnded={handleNextSong} ref={playerRef} playing={playing} style={{display: 'none'}} url={`https://www.youtube.com/watch?v=${currentSong?.mixtape?.songs ? currentSong.mixtape.songs[currentSong.index].id : ''}`} />
         </div>
     )
 }
