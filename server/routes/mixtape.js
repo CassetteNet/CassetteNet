@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
         name: 'New Mixtape',
         collaborators: [{ user: req.user.id, permissions: 'owner', username: req.user.username }],
         songs: [],
-        isPublic: false
+        isPublic: true // TODO: set default to false, true for now to make testing easier
     };
     const mixtapeObject = await Mixtape.create(mixtape);
     return res.send(mixtapeObject);

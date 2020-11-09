@@ -73,7 +73,7 @@ async function songSearch(query) {
  * @param {*} _id id of the user who's favorited mixtapes we want
  */
 async function getFavoritedMixtapes(_id) {
-    const favoritedMixtapes = await axios.get(new URL('/user/favoritedMixtapes', SERVER_ROOT_URL), { withCredentials: true });
+    const favoritedMixtapes = await axios.get(new URL(`/user/${_id}/favoritedMixtapes`, SERVER_ROOT_URL), { withCredentials: true });
     return favoritedMixtapes.data;
 }
 

@@ -4,7 +4,7 @@ import { blueGrey, indigo } from '@material-ui/core/colors';
 import ReactRoundedImage from "react-rounded-image";
 import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
-import { getUser, getUserProfilePictureUrl, queryForMixtapes } from '../../utils/api';
+import { getUser, getUserProfilePictureUrl, queryForMixtapes, getFavoritedMixtapes } from '../../utils/api';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -104,6 +104,7 @@ function ViewUserPage(props) {
   const [user, setUser] = useState({});
 
   const [createdMixtapes, setCreatedMixtapes] = useState([]);
+  const [favoritedMixtapes, setFavoritedMixtapes] = useState([]);
 
   useEffect(() => {
     async function getUserInfo() {
@@ -112,6 +113,8 @@ function ViewUserPage(props) {
           setUser(userInfo);
           const userCreatedMixtapes = await queryForMixtapes({ 'collaborators.user': id, 'collaborators.permissions': 'owner' });
           setCreatedMixtapes(userCreatedMixtapes);
+          const userFavoritedMixtapes = await getFavoritedMixtapes(id);
+          setFavoritedMixtapes(userFavoritedMixtapes);
         }
     }
     getUserInfo();
@@ -239,7 +242,7 @@ function ViewUserPage(props) {
               marginTop: "5px",
               backgroundColor: colors.tabsContainer
             }}>
-              <MixtapeRows mixtapes={favorites} />
+              <MixtapeRows mixtapes={favoritedMixtapes} />
             </Box>
           </TabPanel>
         </Box>
