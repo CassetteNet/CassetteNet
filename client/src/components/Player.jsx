@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from 'react';
 import { Grid } from '@material-ui/core';
-import { Shuffle as ShuffleIcon } from '@material-ui/icons';
+import { Loop as LoopIcon, Shuffle as ShuffleIcon } from '@material-ui/icons';
 import ReactPlayer from 'react-player';
 import CurrentSongContext from '../contexts/CurrentSongContext';
 import PlayingSongContext from '../contexts/PlayingSongContext';
@@ -99,6 +99,7 @@ function Player(props) {
     const { playing, setPlaying } = useContext(PlayingSongContext);
 
     const [shuffle, setShuffle] = useState(false);
+    const [loop, setLoop] = useState(false);
   
     const handlePlay = () => {
       setPlaying(true);
@@ -140,6 +141,18 @@ function Player(props) {
       setPlaying(true);
     };
 
+    const handleSetLoop = () => {
+      const loopState = loop;
+      setLoop(!loopState);
+      setShuffle(loopState);
+    }
+
+    const handleSetShuffle = () => {
+      const shuffleState = shuffle;
+      setLoop(shuffleState);
+      setShuffle(!shuffleState);
+    }
+
     if (playerRef.current) {
         currentSong.duration = playerRef.current.getDuration();
         setCurrentSong(currentSong);
@@ -173,11 +186,14 @@ function Player(props) {
                 }
                 <PlayerIcon.Next onClick={handleNextSong} width={32} height={32} style={{ marginRight: 32 }} />
                 <div style={{color: shuffle ? 'red' : 'black', marginRight: '20px'}}>
-                  <ShuffleIcon onClick={() => setShuffle(!shuffle)} />
+                  <ShuffleIcon onClick={handleSetShuffle} />
+                </div>
+                <div style={{color: loop ? 'red' : 'black', marginRight: '20px'}}>
+                  <LoopIcon onClick={handleSetLoop} />
                 </div>
             </Grid>
             
-            <ReactPlayer onEnded={handleNextSong} ref={playerRef} playing={playing} style={{display: 'none'}} url={`https://www.youtube.com/watch?v=${currentSong?.mixtape?.songs ? currentSong.mixtape.songs[currentSong.index].id : ''}`} />
+            <ReactPlayer onEnded={() => loop ? playerRef.current.seekTo(0) : handleNextSong()} ref={playerRef} playing={playing} style={{display: 'none'}} url={`https://www.youtube.com/watch?v=${currentSong?.mixtape?.songs ? currentSong.mixtape.songs[currentSong.index].id : ''}`} />
         </div>
     )
 }
