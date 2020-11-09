@@ -25,6 +25,26 @@ router.get('/:id/coverImage', async (req, res) => {
 });
 
 
+// executes mongoose query based on query string values
+router.get('/searchMixtapes', async (req, res) => {
+    let mixtapes = await Mixtape.find(req.query).lean();
+    // only return mixtapes the user has permission to view
+    if (req.user) {
+        mixtapes = mixtapes.filter(mixtape => {
+            if (mixtape.isPublic) return true;
+            for (const collaborator of mixtape.collaborators) {
+                if (collaborator.user === req.user.id) return true;
+            }
+            return false;
+        })
+    } else {
+        mixtapes = mixtapes.filter(mixtape => mixtape.isPublic);
+    }
+    res.send(mixtapes);
+});
+
+
+
 // CREATE MIXTAPE
 router.post('/', async (req, res) => {
     if (!req.user) return res.status(401).send([]);
