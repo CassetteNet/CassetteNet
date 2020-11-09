@@ -30,13 +30,14 @@ router.post('/signup', async (req, res) => {
 
 
 router.post('/login', passport.authenticate('local'), (req, res) => {
-    const { username, uniqueId, _id, favoritedMixtapes, followedUsers } = req.user
+    const { username, uniqueId, _id, favoritedMixtapes, followedUsers, admin } = req.user
     res.json({
         _id,
         favoritedMixtapes,
         followedUsers,
         username,
         uniqueId, // convert number to base36 to get alphanumeric id
+        admin,
     });
 });
 
