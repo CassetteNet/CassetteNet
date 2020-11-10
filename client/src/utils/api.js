@@ -144,6 +144,13 @@ async function adminDropDatabase() {
 }
 
 async function getUser(userId) {
+    if (userId.charAt(0) === '#') {
+        if (userId.length === 5) {
+            userId = `!${userId.substring(1)}`;
+        } else {
+            return null;
+        }
+    }
     const user = await axios.get(new URL(`/user/${userId}`, SERVER_ROOT_URL).href);
     return user.data;
 }

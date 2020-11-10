@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUserProfilePictureUrl, userSearch } from '../utils/api';
+import { getUser, getUserProfilePictureUrl, userSearch } from '../utils/api';
 import { debounce } from 'lodash';
 import { CircularProgress, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
@@ -17,14 +17,27 @@ function UserSearchBar(props) {
         if (!searchQuery) {
             setOptions([]);
             return; // don't bother calling server if search is empty
-        } 
+        }
         setLoading(true); // make loading circle appear
-        userSearch(searchQuery)
+        if (searchQuery.charAt(0) === '#') {
+            getUser(searchQuery)
+            .then(res => {
+                if (res) {
+                    setOptions([res]);
+                } else {
+                    setOptions([]);
+                }
+                setLoading(false);
+            })
+            .catch(err => alert(err));
+        } else {
+            userSearch(searchQuery)
             .then(res => {
                 setOptions(res);
                 setLoading(false);
             })
             .catch(err => alert(err));
+        }
     }, [searchQuery]);
 
     const search = (e) => {
@@ -40,15 +53,15 @@ function UserSearchBar(props) {
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
       getOptionSelected={(option, value) => setSelected(value)}
-      getOptionLabel={(option) => option.username}
+      getOptionLabel={(option) => option?.username}
       options={options}
-      loading={loading}
+      filterOptions={x => x}
       renderInput={(params) => (
         <TextField
           {...params}
           onKeyPress={() => setLoading(true)}
           onBlur={() => setLoading(false)}
-          onChange={debounce((e) => search(e), 500)}
+          onChange={(e) => search(e)}
           label="Search"
           variant="outlined"
           InputProps={{

@@ -35,7 +35,7 @@ const userSchema = new Schema({
 
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(AutoIncrement, { inc_field: 'uniqueId' });
-userSchema.index({ username: 'text', uniqueId: 'text' });
+userSchema.index({ username: 'text' });
 userSchema.plugin(mongoosePartialTextSearch);
 
 const mixtapeSchema = new Schema({
