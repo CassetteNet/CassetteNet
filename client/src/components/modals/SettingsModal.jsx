@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Backdrop,
     Button,
@@ -19,10 +19,10 @@ import {
     Typography,
     TextField,
 } from '@material-ui/core';
-import { AddCircle as AddIcon, Warning as WarningIcon } from '@material-ui/icons';
+import { AddCircle as AddIcon, Warning as WarningIcon, Save as SaveIcon } from '@material-ui/icons';
 import { blueGrey } from '@material-ui/core/colors';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { deleteMixtape, getUsername } from '../../utils/api';
+import { deleteMixtape } from '../../utils/api';
 import { users } from '../../testData/users.json';
 import { Autocomplete } from '@material-ui/lab';
 import { useHistory } from 'react-router-dom';
@@ -62,22 +62,39 @@ const StyledTableRow = withStyles((theme) => ({
 
 function SettingsModal(props) {
     const classes = useStyles();
-    const { mixtape, setMixtape, settingsPopupIsOpen, handleSettingsPopup } = props;
-
+    const { mixtape, setMixtape, settingsPopupIsOpen, handleSettingsPopup, permissions, setPermissions } = props;
     const history = useHistory();
 
     const [roleSelectOpen, setRoleSelectOpen] = useState(null);
 
+    const [unsavedPermissions, setUnsavedPermissions] = useState([]);
+
+    useEffect(() => setUnsavedPermissions(permissions), [permissions]);
+
     const handleRoleChange = (event, index) => {
-        const newMixtape = { ...mixtape };
-        newMixtape.collaborators[index].permissions = event.target.value;
-        setMixtape(newMixtape);
+        const newPermissions = [...unsavedPermissions];
+        newPermissions[index] = event.target.value;
+        setUnsavedPermissions(newPermissions);
     };
 
     const handleDeleteMixtape = async (mixtape) => {
         await deleteMixtape(mixtape);
         history.goBack();
     };
+
+    const showSaveIcon = () => {
+        if (unsavedPermissions.length !== permissions.length) {
+            return true;
+        }
+        for (let i = 0; i < permissions.length; i++) {
+            if (unsavedPermissions[i] !== permissions[i]) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const savePermissions = () => setPermissions(unsavedPermissions);
 
     return (
         <Modal
@@ -93,7 +110,7 @@ function SettingsModal(props) {
             <Fade in={settingsPopupIsOpen}>
                 <Grid container style={{ backgroundColor: blueGrey[400], height: '70%', width: '60%' }}>
                     <Grid item xs={3} />
-                    <Grid item xs={6} justify="center" style={{ backgrondColor: 'green' }}>
+                    <Grid item xs={6} style={{ backgrondColor: 'green' }}>
                         <Typography align="center" variant="h3">Mixtape Settings</Typography>
                         <hr />
                     </Grid>
@@ -109,19 +126,28 @@ function SettingsModal(props) {
                                         <TableHead>
                                             <TableRow>
                                                 <StyledTableCell>User</StyledTableCell>
-                                                <StyledTableCell>Role</StyledTableCell>
+                                                <StyledTableCell>
+                                                    <Grid container>
+                                                        <Grid item xs={10}>
+                                                            <span>Role</span>
+                                                        </Grid>
+                                                        <Grid item xs={2} style={{ display: showSaveIcon() ? '' : 'none' }}>
+                                                            <SaveIcon onClick={savePermissions} />
+                                                        </Grid>
+                                                    </Grid>
+                                                </StyledTableCell>
                                             </TableRow>
                                         </TableHead>
                                         <TableBody>
-                                            {mixtape.collaborators.map((collaborator, index) => (
+                                            {mixtape?.collaborators.map((collaborator, index) => (
                                                 <StyledTableRow key={index}>
-                                                    <StyledTableCell>{getUsername(collaborator.user)}</StyledTableCell>
+                                                    <StyledTableCell>{collaborator.username}</StyledTableCell>
                                                     <StyledTableCell>
                                                         <Select
                                                             open={roleSelectOpen}
-                                                            onClose={() => setRoleSelectOpen(null)}
-                                                            onOpen={() => setRoleSelectOpen(index)}
-                                                            value={collaborator.permissions}
+                                                            onClose={() => setRoleSelectOpen(false)}
+                                                            onOpen={() => setRoleSelectOpen(true)}
+                                                            value={unsavedPermissions[index]}
                                                             onChange={(e) => handleRoleChange(e, index)}
                                                         >
                                                             <MenuItem value={'owner'}>Owner</MenuItem>
@@ -164,7 +190,7 @@ function SettingsModal(props) {
                     <Grid item xs={3} />
                     <Grid item xs={3} style={{ margin: '10% 0' }}>
                         <Grid container justify="center" alignItems="center" style={{ height: '50%' }}>
-                            <Grid item xs={12} justify="center">
+                            <Grid item xs={12}>
                                 <FormControlLabel
                                     control={<Switch checked={true} onChange={() => undefined} name="checkedA" />}
                                     label="Mixtape Public?"
@@ -172,7 +198,7 @@ function SettingsModal(props) {
                             </Grid>
                         </Grid>
                         <Grid container justify="center" alignItems="center">
-                            <Grid item xs={12} justify="center">
+                            <Grid item xs={12}>
                                 <Button
                                     variant="contained"
                                     color="secondary"
