@@ -47,9 +47,9 @@ function Mixtape(props) {
 
     const { enableEditing, isEditing, setIsEditing, mixtape, setMixtape } = props;
 
-    const { setCurrentSong } = useContext(CurrentSongContext);
+    const { currentSong, setCurrentSong } = useContext(CurrentSongContext);
 
-    const { playing, setPlaying } = useContext(PlayingSongContext);
+    const { setPlaying } = useContext(PlayingSongContext);
 
     const [addSongPopupIsOpen, setAddSongPopupIsOpen] = useState(false); // whether add song popup is open
     const [addSongSearchResults, setAddSongSearchResults] = useState([]); // search results in song search
@@ -105,7 +105,8 @@ function Mixtape(props) {
       setCurrentSong({
         mixtape,
         index,
-      })
+        disabled: currentSong.disabled,
+      });
     };
 
     const clickCheckbox = (songId) => {
@@ -128,6 +129,11 @@ function Mixtape(props) {
     const saveMixtape = async () => {
       setIsEditing(false);
       updateMixtape(mixtape);
+      setCurrentSong({
+        mixtape: currentSong.mixtape,
+        index: currentSong.index,
+        disabled: null,
+      });
     }
 
     const addSong = async () => {
@@ -142,6 +148,11 @@ function Mixtape(props) {
 
     const enableEditingHandler = () => {
       setIsEditing(true);
+      setCurrentSong({
+        mixtape: currentSong.mixtape,
+        index: currentSong.index,
+        disabled: mixtape._id,
+      });
       setPlaying(false);
     }
 
