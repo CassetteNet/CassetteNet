@@ -11,7 +11,7 @@ function UserSearchBar(props) {
     const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const { setSelected } = props;
+    const { userSelectHandler } = props;
 
     useEffect(() => {
         if (!searchQuery) {
@@ -52,7 +52,8 @@ function UserSearchBar(props) {
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
-      getOptionSelected={(option, value) => setSelected(value)}
+      onChange={(e, value) => userSelectHandler(value)}
+      getOptionSelected={(option, value) => option._id === value._id}
       getOptionLabel={(option) => option?.username}
       options={options}
       filterOptions={x => x}
@@ -78,7 +79,7 @@ function UserSearchBar(props) {
       renderOption={(user) => (
           <React.Fragment style={{height: '2em'}}>
               <img style={{height: '2em', marginRight: '2em'}} src={getUserProfilePictureUrl(user._id)} />
-              <span>{user.username} ({user.uniqueId})</span>
+              <span>{user.username} ({user.uniqueId.toString(36)})</span>
           </React.Fragment>
       )}
     />

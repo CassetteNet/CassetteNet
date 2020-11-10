@@ -61,12 +61,25 @@ const StyledTableRow = withStyles((theme) => ({
 
 function SettingsModal(props) {
     const classes = useStyles();
-    const { mixtape, setMixtape, settingsPopupIsOpen, handleSettingsPopup, permissions, setPermissions } = props;
+
+    const { 
+        mixtape,
+        setMixtape,
+        settingsPopupIsOpen,
+        handleSettingsPopup,
+        permissions,
+        setPermissions,
+        permissionUserList,
+        setPermissionUserList,
+    } = props;
+
     const history = useHistory();
 
     const [roleSelectOpen, setRoleSelectOpen] = useState(null);
 
     const [unsavedPermissions, setUnsavedPermissions] = useState([]);
+
+    const [userToAdd, setUserToAdd] = useState(null);
 
     useEffect(() => setUnsavedPermissions(permissions), [permissions]);
 
@@ -94,6 +107,18 @@ function SettingsModal(props) {
     };
 
     const savePermissions = () => setPermissions(unsavedPermissions);
+
+    const selectUser = (user) => {
+        const newPermissions = [...permissions];
+        const newPermissionUsers = [...permissionUserList];
+        newPermissionUsers.push({
+            username: user.username,
+            user: user._id,
+        });
+        newPermissions.push('viewer');
+        setPermissions(newPermissions);
+        setPermissionUserList(newPermissionUsers);
+    }
 
     return (
         <Modal
@@ -140,7 +165,7 @@ function SettingsModal(props) {
                                         <TableBody>
                                             {mixtape?.collaborators.map((collaborator, index) => (
                                                 <StyledTableRow key={index}>
-                                                    <StyledTableCell>{collaborator.username}</StyledTableCell>
+                                                    <StyledTableCell>{collaborator?.username}</StyledTableCell>
                                                     <StyledTableCell>
                                                         <Select
                                                             open={roleSelectOpen}
@@ -163,7 +188,7 @@ function SettingsModal(props) {
 
                             <Grid container style={{ marginTop: '1em' }}>
                                 <Grid item xs={10}>
-                                    <UserSearchBar />
+                                    <UserSearchBar userSelectHandler={selectUser} />
                                 </Grid>
                                 <Grid item xs={1}>
                                     <Button style={{ marginTop: '1em' }} variant="contained"><AddIcon /></Button>

@@ -45,7 +45,7 @@ function Mixtape(props) {
 
   const [songsToDelete, setSongsToDelete] = useState([]);
 
-  const { enableEditing, isEditing, setIsEditing, mixtape, setMixtape, permissions, setPermissions } = props;
+  const { enableEditing, isEditing, setIsEditing, mixtape, setMixtape, permissions, setPermissions, permissionUserList, setPermissionUserList } = props;
 
   const { currentSong, setCurrentSong } = useContext(CurrentSongContext);
 
@@ -193,6 +193,8 @@ function Mixtape(props) {
         handleSettingsPopup={handleSettingsPopup}
         permissions={permissions}
         setPermissions={setPermissions}
+        permissionUserList={permissionUserList}
+        setPermissionUserList={setPermissionUserList}
       />
 
 

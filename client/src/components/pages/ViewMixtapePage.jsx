@@ -41,6 +41,7 @@ function ViewMixtapePage(props) {
     const [mixtape, setMixtape] = useState(null);
 
     const [permissions, setPermissions] = useState([]);
+    const [permissionUserList, setPermissionUserList] = useState([]);
 
     const [open, setOpen] = useState(false);
     
@@ -52,7 +53,7 @@ function ViewMixtapePage(props) {
         saveName();
         setOpen(false);
     };
-    const owner = mixtape?.collaborators.filter(c => c.permissions === 'owner').map(c => c.username)[0];
+    const owner = mixtape?.collaborators.filter(c => c?.permissions === 'owner').map(c => c?.username)[0];
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -80,6 +81,9 @@ function ViewMixtapePage(props) {
                 });
                 if (!mixtape) {
                     setPermissions(updatedMixtape.collaborators.map(c => c.permissions));
+                    setPermissionUserList(updatedMixtape.collaborators.map(c => (
+                        { username: c.username, user: c.user }
+                    )));
                 }
                 console.log(updatedMixtape);
                 setMixtape(updatedMixtape);
@@ -92,7 +96,11 @@ function ViewMixtapePage(props) {
         if (permissions && mixtape) {
             const newMixtape = { ...mixtape };
             permissions.forEach((permission, i) => {
-                newMixtape.collaborators[i].permissions = permission;
+                if (newMixtape.collaborators.length < (i+1)) {
+                    newMixtape.collaborators.push(permissionUserList[i]);
+                }
+                if (newMixtape.collaborators[i])
+                    newMixtape.collaborators[i].permissions = permission;
             });
             setMixtape(newMixtape);
             await updateMixtape(newMixtape);
@@ -175,7 +183,7 @@ function ViewMixtapePage(props) {
                 </div>
             </Paper>
             <Grid container justify="center">
-                <Mixtape permissions={permissions} setPermissions={setPermissions} enableEditing={true} isEditing={isEditing} setIsEditing={setIsEditing} mixtape={mixtape} setMixtape={setMixtape} />
+                <Mixtape permissionUserList={permissionUserList} setPermissionUserList={setPermissionUserList} permissions={permissions} setPermissions={setPermissions} enableEditing={true} isEditing={isEditing} setIsEditing={setIsEditing} mixtape={mixtape} setMixtape={setMixtape} />
             </Grid>
         </div>
     )
