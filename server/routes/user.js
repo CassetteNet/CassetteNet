@@ -91,6 +91,18 @@ router.put('/verify', async (req, res) => {
     }
 });
 
+router.get('/search', async (req, res) => {
+    const { query } = req.query;
+    console.log(query);
+    if (!query) return res.send([]);
+    const users = await User.find(User.searchBuilder(query)).lean();
+    return res.send(users.map(user => ({
+        _id: user._id,
+        username: user.username,
+        uniqueId: user.uniqueId,
+    })));
+});
+
 // get a user's mixtapes
 // TODO: secure/authentication
 router.get('/mixtapes', async (req, res) => {

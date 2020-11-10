@@ -153,6 +153,12 @@ async function queryForMixtapes(query) {
     return mixtapes.data;
 }
 
+// search for a user
+async function userSearch(searchQuery) {
+    const users = await axios.get(new URL('/user/search', SERVER_ROOT_URL).href, { params: { query: searchQuery } });
+    return users.data;
+}
+
 export {
     createMixtape,
     deleteMixtape,
@@ -177,4 +183,5 @@ export {
     uploadFile,
     adminFillDatabase,
     adminDropDatabase,
+    userSearch,
 };

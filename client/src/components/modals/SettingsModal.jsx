@@ -22,9 +22,8 @@ import {
 import { AddCircle as AddIcon, Warning as WarningIcon, Save as SaveIcon } from '@material-ui/icons';
 import { blueGrey } from '@material-ui/core/colors';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
+import UserSearchBar from '../UserSearchBar';
 import { deleteMixtape } from '../../utils/api';
-import { users } from '../../testData/users.json';
-import { Autocomplete } from '@material-ui/lab';
 import { useHistory } from 'react-router-dom';
 
 
@@ -164,21 +163,7 @@ function SettingsModal(props) {
 
                             <Grid container style={{ marginTop: '1em' }}>
                                 <Grid item xs={10}>
-                                    <Autocomplete
-                                        style={{ backgroundColor: 'white', width: '85%' }}
-                                        size="small"
-                                        freeSolo
-                                        disableClearable
-                                        options={users.map(user => user.username)}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                label="Search for a user..."
-                                                variant="filled"
-                                                InputProps={{ style: { fontSize: '1.5em' }, disableUnderline: true, type: 'search' }}
-                                            />
-                                        )}
-                                    />
+                                    <UserSearchBar />
                                 </Grid>
                                 <Grid item xs={1}>
                                     <Button style={{ marginTop: '1em' }} variant="contained"><AddIcon /></Button>
