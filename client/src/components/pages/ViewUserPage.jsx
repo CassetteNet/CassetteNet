@@ -59,18 +59,22 @@ var theirMixtapes = [
   },
 ];
 
-const MixtapeRows = ({ mixtapes }) => (
+const MixtapeRows = ({ mixtapes, history }) => (
   <>
     {mixtapes.map(mixtape => (
-      <Box style={{
-        margin: "5px",
-        padding: "10px",
-        backgroundColor: blueGrey[700],
-        display: "flex",
-        flexDirection: "row",
-        borderRadius: 6,
-        fontSize: 12,
-      }}>
+      <Box
+        style={{
+          margin: "5px",
+          padding: "10px",
+          backgroundColor: blueGrey[700],
+          display: "flex",
+          flexDirection: "row",
+          borderRadius: 6,
+          fontSize: 12,
+          cursor: 'pointer',
+        }}
+        onClick={() => history.push(`/mixtape/${mixtape._id}`)}
+      >
         <Box style={{ width: "33%", display: 'flex', justifyContent: "center" }}> {mixtape.name} </Box>
         <Box style={{ width: "33%", display: 'flex', justifyContent: "center" }}> {mixtape.collaborators.map(collaborator => collaborator.username).toString()} </Box>
         <Box style={{ width: "33%", display: 'flex', justifyContent: "center" }}> {mixtape.favorites} </Box>
@@ -108,14 +112,14 @@ function ViewUserPage(props) {
 
   useEffect(() => {
     async function getUserInfo() {
-        if (id) {
-          const userInfo = await getUser(id);
-          setUser(userInfo);
-          const userCreatedMixtapes = await queryForMixtapes({ 'collaborators.user': id, 'collaborators.permissions': 'owner' });
-          setCreatedMixtapes(userCreatedMixtapes);
-          const userFavoritedMixtapes = await getFavoritedMixtapes(id);
-          setFavoritedMixtapes(userFavoritedMixtapes);
-        }
+      if (id) {
+        const userInfo = await getUser(id);
+        setUser(userInfo);
+        const userCreatedMixtapes = await queryForMixtapes({ 'collaborators.user': id, 'collaborators.permissions': 'owner' });
+        setCreatedMixtapes(userCreatedMixtapes);
+        const userFavoritedMixtapes = await getFavoritedMixtapes(id);
+        setFavoritedMixtapes(userFavoritedMixtapes);
+      }
     }
     getUserInfo();
   }, []);
@@ -158,8 +162,8 @@ function ViewUserPage(props) {
               <Typography style={{ fontSize: '40px' }} variant="h3">{user.username}</Typography>
               <Typography style={{ fontSize: '20px' }} variant="h3">#{user.uniqueId}</Typography>
             </span>
-            <Typography style={{ fontSize: '20px' }} variant="h3">User since: {userSince.getMonth()+1}/{userSince.getDate()}/{userSince.getFullYear()}</Typography>
-            <Typography style={{ fontSize: '20px' }} variant="h3">Last activity: {lastActivity.getMonth()+1}/{lastActivity.getDate()}/{lastActivity.getFullYear()}</Typography>
+            <Typography style={{ fontSize: '20px' }} variant="h3">User since: {userSince.getMonth() + 1}/{userSince.getDate()}/{userSince.getFullYear()}</Typography>
+            <Typography style={{ fontSize: '20px' }} variant="h3">Last activity: {lastActivity.getMonth() + 1}/{lastActivity.getDate()}/{lastActivity.getFullYear()}</Typography>
             <Typography style={{ fontSize: '20px' }} variant="h3">Followers: {user.followers}</Typography>
             <Button variant="outlined" style={{ padding: '10px', marginTop: '10px', height: '40px', width: '20px', backgroundColor: blueGrey[600], color: 'white' }}>Follow</Button>
           </div>
@@ -242,7 +246,7 @@ function ViewUserPage(props) {
               marginTop: "5px",
               backgroundColor: colors.tabsContainer
             }}>
-              <MixtapeRows mixtapes={favoritedMixtapes} />
+              <MixtapeRows mixtapes={favoritedMixtapes} history={history} />
             </Box>
           </TabPanel>
         </Box>
