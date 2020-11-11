@@ -142,6 +142,10 @@ async function getSongDuration(api, itemId) {
     return songDuration.data;
 }
 
+function getSoundCloudSongUrl(itemId) {
+    return new URL(`/soundcloud/streamAudio/${itemId}`, SERVER_ROOT_URL).href;
+}
+
 async function adminFillDatabase() {
     await axios.post(new URL('/admin/populateDatabase', SERVER_ROOT_URL).href);
 }
@@ -193,6 +197,7 @@ export {
     queryForMixtapes,
     songSearch,
     getSongDuration,
+    getSoundCloudSongUrl,
     setUsernameOfOAuthAccount,
     verifyUserLoggedIn,
     updateMixtape,

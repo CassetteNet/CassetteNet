@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { getSongInfo, searchSong } = require('../external_apis/soundcloud');
+const { getSongInfo, searchSong, streamSongAudio } = require('../external_apis/soundcloud');
 
 const router = express.Router();
 
@@ -32,6 +32,12 @@ router.get('/itemDuration', async (req, res) => {
         console.log(err);
         res.status(500).send(err);
     }
+});
+
+router.get('/streamAudio/:itemId', async (req, res) => {
+    const { itemId } = req.params;
+    const stream = await streamSongAudio(itemId);
+    stream.pipe(res);
 });
 
 

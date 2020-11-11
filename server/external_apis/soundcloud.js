@@ -14,7 +14,13 @@ async function getSongInfo(songId) {
     }
 }
 
+async function streamSongAudio(songId) {
+    const stream = await soundcloud.download(`https://api.soundcloud.com/tracks/${songId}`);
+    return stream;
+}
+
 module.exports = {
     getSongInfo,
-    searchSong
+    searchSong,
+    streamSongAudio,
 }
