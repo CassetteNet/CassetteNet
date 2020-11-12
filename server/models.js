@@ -56,6 +56,9 @@ const mixtapeSchema = new Schema({
   isPublic: Boolean,
 });
 
+mixtapeSchema.index({ name: 'text' });
+mixtapeSchema.plugin(mongoosePartialTextSearch);
+
 const inboxMessageSchema = new Schema({
   mixtape: mongoose.Types.ObjectId, // id of the mixtape this message corresponds to
   sender: {

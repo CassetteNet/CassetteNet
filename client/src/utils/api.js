@@ -192,7 +192,7 @@ async function getUser(userId) {
 }
 
 async function queryForMixtapes(query) {
-    const mixtapes = await axios.get(new URL(`/mixtape/searchMixtapes`, SERVER_ROOT_URL).href, { params: query });
+    const mixtapes = await axios.get(new URL(`/mixtape/queryMixtapes`, SERVER_ROOT_URL).href, { params: query });
     return mixtapes.data;
 }
 
