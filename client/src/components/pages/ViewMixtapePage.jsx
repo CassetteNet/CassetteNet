@@ -88,13 +88,6 @@ function ViewMixtapePage(props) {
         initialMixtape.duration = initialMixtape.songs.map(song => song.duration).reduce((total, current) => total + current);
         setMixtape(initialMixtape);
         setCoverImageUrl(getMixtapeCoverImageUrl(initialMixtape._id));
-        for (const collaborator of initialMixtape.collaborators) {
-            if (collaborator.user === user._id) {
-                user.permissions = collaborator.permissions;
-                setUser(user);
-                break;
-            }
-        }
     }, []);
 
 

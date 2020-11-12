@@ -25,6 +25,7 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { MusicNote as MusicNoteIcon, Settings as SettingsIcon, Edit as EditIcon, PlayCircleFilledWhite as PlayIcon, Delete as DeleteIcon, AddCircle as AddIcon, Save as SaveIcon, Undo as UndoIcon, Cake as CakeIcon } from '@material-ui/icons';
 import CurrentSongContext from '../contexts/CurrentSongContext';
 import PlayingSongContext from '../contexts/PlayingSongContext';
+import UserContext from '../contexts/UserContext';
 import JSTPSContext from '../contexts/JSTPSContext';
 import { getSongDuration, songSearch, updateMixtape } from '../utils/api';
 import { Autocomplete } from '@material-ui/lab';
@@ -60,6 +61,8 @@ function Mixtape(props) {
   const { enableEditing, isEditing, setIsEditing, mixtape, setMixtape } = props;
 
   const { currentSong, setCurrentSong } = useContext(CurrentSongContext);
+  
+  const { user, setUser } = useContext(UserContext);
 
   const { setPlaying } = useContext(PlayingSongContext);
 
@@ -80,6 +83,24 @@ function Mixtape(props) {
   const handleSettingsPopup = () => {
     setSettingsPopupIsOpen(!settingsPopupIsOpen);
   };
+
+  const [editButtonVisible, setEditButtonVisible] = useState(false);
+
+  // hide edit button if user is a viewer or non-collaborator
+  useEffect(() => {
+    if (mixtape?.collaborators) {
+      for (const collaborator of mixtape.collaborators) {
+        if (collaborator.user === user._id) {
+          if (collaborator.permissions === 'editor' || collaborator.permissions === 'owner') {
+            setEditButtonVisible(true);
+          } else {
+            setEditButtonVisible(false);
+          }
+          break;
+        }
+      }
+    }
+  });
 
   const onDragEnd = (result) => {
     if (!result.destination) {
@@ -285,7 +306,17 @@ function Mixtape(props) {
                     </Grid>
                     :
                     <Grid container>
-                      <Button startIcon={<EditIcon />} onClick={enableEditingHandler} style={{ position: 'absolute', right: '5%' }} variant="contained">EDIT</Button>
+                      {
+                        editButtonVisible ? 
+                          <Button
+                            startIcon={<EditIcon />}
+                            onClick={enableEditingHandler}
+                            style={{ position: 'absolute', right: '5%' }}
+                            variant="contained">
+                              EDIT
+                          </Button>
+                        : undefined
+                        }
                       <Button
                         style={{ marginRight: '5%', float: 'right', backgroundColor: 'steelblue' }}
                         variant="contained"
