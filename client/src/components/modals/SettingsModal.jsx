@@ -18,7 +18,7 @@ import {
     TableRow,
     Typography,
 } from '@material-ui/core';
-import { AddCircle as AddIcon, Warning as WarningIcon, Save as SaveIcon, Edit as EditIcon, DeleteForever as DeleteIcon } from '@material-ui/icons';
+import { AddCircle as AddIcon, Warning as WarningIcon, Check as DoneIcon, Edit as EditIcon, DeleteForever as DeleteIcon } from '@material-ui/icons';
 import { blueGrey } from '@material-ui/core/colors';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import UserSearchBar from '../UserSearchBar';
@@ -105,20 +105,21 @@ function SettingsModal(props) {
         history.goBack();
     };
 
-    const showSaveIcon = () => {
+    const showDoneIcon = () => {
         return mixtape?.collaborators.length !== unsavedCollaborators.length || editing;
     };
 
     const savePermissions = () => {
-        mixtape.collaborators = unsavedCollaborators
+        setEditing(false);
+        mixtape.collaborators = unsavedCollaborators;
         setMixtape(mixtape);
     }
 
     const selectUser = (newUser) => {
         if (!newUser) return;
         const newCollaborators = [...unsavedCollaborators];
-        const { username, user, permissions } = newUser;
-        newCollaborators.push({ username, user, permissions });
+        const { username, _id } = newUser;
+        newCollaborators.push({ username, user: _id, permissions: 'viewer' });
         setUnsavedCollaborators(newCollaborators);
     }
 
@@ -163,8 +164,8 @@ function SettingsModal(props) {
                                         <EditIcon align="right" style={{ color: 'white' }} onClick={() => setEditing(true)} />
                                     }
                                 </Grid>
-                                <Grid item xs={1} style={{ display: showSaveIcon() ? '' : 'none' }}>
-                                    <SaveIcon align="right" style={{ color: 'white' }} onClick={savePermissions} />
+                                <Grid item xs={1} style={{ display: showDoneIcon() ? '' : 'none' }}>
+                                    <DoneIcon align="right" style={{ color: 'white' }} onClick={savePermissions} />
                                 </Grid>
                             </Grid>
                             <Grid item xs={12} style={{ overflow: 'auto', maxHeight: '100%' }}>

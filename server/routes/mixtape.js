@@ -74,6 +74,15 @@ router.post('/', async (req, res) => {
 // RETRIEVE MIXTAPE
 router.get('/:id', async (req, res) => {
     const mixtape = await Mixtape.findOne({ _id: (req.params.id) }).lean();
+    if (!mixtape.isPublic) {
+        if (!req.user) return res.status(401).send('unauthorized');
+        for (const collaborator of mixtape.collaborators) {
+            if (collaborator.user.equals(req.user._id)) {
+                return res.send(mixtape);
+            }
+        }
+        return res.status(401).send('unauthorized');
+    }
     return res.send(mixtape);
 });
 
