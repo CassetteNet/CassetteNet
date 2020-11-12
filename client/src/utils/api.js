@@ -202,6 +202,11 @@ async function userSearch(searchQuery) {
     return users.data;
 }
 
+async function mixtapeSearch(searchQuery) {
+    const mixtapes = await axios.get(new URL('/mixtape/search', SERVER_ROOT_URL).href, { params: { query: searchQuery } });
+    return mixtapes.data;
+}
+
 function oauthLogin(provider) {
     window.location.href = new URL(`/auth/${provider}`, SERVER_ROOT_URL).href;
 }
@@ -237,6 +242,7 @@ export {
     adminFillDatabase,
     adminDropDatabase,
     userSearch,
+    mixtapeSearch,
     getAdmins,
     deleteAdmin,
     addAdmin,

@@ -120,6 +120,8 @@ function SearchBar(props) {
             <Grid container style={{border: '2px solid black'}}>
                 <TextField
                   variant="filled"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   InputProps={{
                     startAdornment: (
                       <InputAdornment>
