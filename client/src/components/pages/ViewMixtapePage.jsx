@@ -71,14 +71,15 @@ function ViewMixtapePage(props) {
             )
         ) {
             if (mixtape) {
-                updateMixtape(mixtape);
+                await updateMixtape(mixtape);
                 setCoverImageUrl(getMixtapeCoverImageUrl(mixtape._id));
-                }
+            }
         }
     }, [mixtape, prevMixtape]);
 
     useEffect(async () => {
         const initialMixtape = await getMixtape(props.match.params.id);
+        initialMixtape.duration = initialMixtape.songs.map(song => song.duration).reduce((total, current) => total + current);
         setMixtape(initialMixtape);
         setCoverImageUrl(getMixtapeCoverImageUrl(initialMixtape._id));
     }, []);
