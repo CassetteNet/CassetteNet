@@ -73,12 +73,7 @@ router.post('/', async (req, res) => {
 
 // RETRIEVE MIXTAPE
 router.get('/:id', async (req, res) => {
-    const mixtape = await Mixtape.findOne({ _id: (req.params.id) });
-    for (const collaborator of mixtape.collaborators) {
-        const user = await User.findOne({ _id: (collaborator.user) });
-        collaborator.username = user.username;
-    }
-    delete mixtape.coverImage;
+    const mixtape = await Mixtape.findOne({ _id: (req.params.id) }).lean();
     return res.send(mixtape);
 });
 

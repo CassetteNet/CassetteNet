@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
     Backdrop,
     Button,
+    Checkbox,
     Fade,
     FormControlLabel,
     Grid,
@@ -14,12 +15,10 @@ import {
     TableBody,
     TableContainer,
     TableCell,
-    TableHead,
     TableRow,
     Typography,
-    TextField,
 } from '@material-ui/core';
-import { AddCircle as AddIcon, Warning as WarningIcon, Save as SaveIcon } from '@material-ui/icons';
+import { AddCircle as AddIcon, Warning as WarningIcon, Save as SaveIcon, Edit as EditIcon, DeleteForever as DeleteIcon } from '@material-ui/icons';
 import { blueGrey } from '@material-ui/core/colors';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import UserSearchBar from '../UserSearchBar';
@@ -62,31 +61,43 @@ const StyledTableRow = withStyles((theme) => ({
 function SettingsModal(props) {
     const classes = useStyles();
 
-    const { 
+    const {
         mixtape,
         setMixtape,
         settingsPopupIsOpen,
         handleSettingsPopup,
-        permissions,
-        setPermissions,
-        permissionUserList,
-        setPermissionUserList,
     } = props;
 
     const history = useHistory();
 
     const [roleSelectOpen, setRoleSelectOpen] = useState(null);
 
-    const [unsavedPermissions, setUnsavedPermissions] = useState([]);
+    const [unsavedCollaborators, setUnsavedCollaborators] = useState([]);
 
-    const [userToAdd, setUserToAdd] = useState(null);
+    const [editing, setEditing] = useState(false);
 
-    useEffect(() => setUnsavedPermissions(permissions), [permissions]);
+    const [toDelete, setToDelete] = useState([]);
+
+    useEffect(() => {
+        if (mixtape?.collaborators)
+            setUnsavedCollaborators(mixtape.collaborators);
+    }, [mixtape]);
+
+    const handleCheckbox = (collaborator) => {
+        const newToDelete = [...toDelete];
+        newToDelete.push(collaborator.user);
+        setToDelete(newToDelete);
+    }
+
+    const handleClickGarbage = () => {
+        const newCollaborators = [...unsavedCollaborators].filter(c => !toDelete.includes(c.user));
+        setUnsavedCollaborators(newCollaborators);
+    }
 
     const handleRoleChange = (event, index) => {
-        const newPermissions = [...unsavedPermissions];
-        newPermissions[index] = event.target.value;
-        setUnsavedPermissions(newPermissions);
+        const newCollaborators = [...unsavedCollaborators];
+        newCollaborators[index].permissions = event.target.value;
+        setUnsavedCollaborators(newCollaborators);
     };
 
     const handleDeleteMixtape = async (mixtape) => {
@@ -95,29 +106,20 @@ function SettingsModal(props) {
     };
 
     const showSaveIcon = () => {
-        if (unsavedPermissions.length !== permissions.length) {
-            return true;
-        }
-        for (let i = 0; i < permissions.length; i++) {
-            if (unsavedPermissions[i] !== permissions[i]) {
-                return true;
-            }
-        }
-        return false;
+        return mixtape?.collaborators.length !== unsavedCollaborators.length || editing;
     };
 
-    const savePermissions = () => setPermissions(unsavedPermissions);
+    const savePermissions = () => {
+        mixtape.collaborators = unsavedCollaborators
+        setMixtape(mixtape);
+    }
 
-    const selectUser = (user) => {
-        const newPermissions = [...permissions];
-        const newPermissionUsers = [...permissionUserList];
-        newPermissionUsers.push({
-            username: user.username,
-            user: user._id,
-        });
-        newPermissions.push('viewer');
-        setPermissions(newPermissions);
-        setPermissionUserList(newPermissionUsers);
+    const selectUser = (newUser) => {
+        if (!newUser) return;
+        const newCollaborators = [...unsavedCollaborators];
+        const { username, user, permissions } = newUser;
+        newCollaborators.push({ username, user, permissions });
+        setUnsavedCollaborators(newCollaborators);
     }
 
     return (
@@ -147,29 +149,38 @@ function SettingsModal(props) {
                                 <Typography align="center" variant="h5">Permissions</Typography>
                             </Grid>
                             <Grid container style={{ borderRadius: '2%', backgroundColor: 'black' }}>
-                                <Grid item xs={6}>
-                                    <Typography style={{color: 'white'}} align="center" variant="h6">User</Typography>
-                                </Grid>
                                 <Grid item xs={5}>
-                                    <Typography style={{color: 'white'}} align="center" variant="h6">Role</Typography>
+                                    <Typography style={{ color: 'white' }} align="center" variant="h6">User</Typography>
+                                </Grid>
+                                <Grid item xs={1} />
+                                <Grid item xs={4}>
+                                    <Typography style={{ color: 'white' }} align="center" variant="h6">Role</Typography>
+                                </Grid>
+                                <Grid item xs={1}>
+                                    {editing ?
+                                        <DeleteIcon align="right" style={{ color: 'white' }} onClick={handleClickGarbage} />
+                                        :
+                                        <EditIcon align="right" style={{ color: 'white' }} onClick={() => setEditing(true)} />
+                                    }
                                 </Grid>
                                 <Grid item xs={1} style={{ display: showSaveIcon() ? '' : 'none' }}>
-                                    <SaveIcon style={{color: 'white'}} onClick={savePermissions} />
+                                    <SaveIcon align="right" style={{ color: 'white' }} onClick={savePermissions} />
                                 </Grid>
                             </Grid>
                             <Grid item xs={12} style={{ overflow: 'auto', maxHeight: '100%' }}>
                                 <TableContainer component={Paper}>
                                     <Table>
                                         <TableBody>
-                                            {mixtape?.collaborators.map((collaborator, index) => (
+                                            {unsavedCollaborators.map((collaborator, index) => (
                                                 <StyledTableRow key={index}>
+                                                    {editing ? <StyledTableCell><Checkbox onChange={() => handleCheckbox(collaborator)} /></StyledTableCell> : undefined}
                                                     <StyledTableCell>{collaborator?.username}</StyledTableCell>
                                                     <StyledTableCell>
                                                         <Select
                                                             open={roleSelectOpen}
                                                             onClose={() => setRoleSelectOpen(false)}
                                                             onOpen={() => setRoleSelectOpen(true)}
-                                                            value={unsavedPermissions[index]}
+                                                            value={unsavedCollaborators[index]?.permissions}
                                                             onChange={(e) => handleRoleChange(e, index)}
                                                         >
                                                             <MenuItem value={'owner'}>Owner</MenuItem>

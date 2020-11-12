@@ -57,7 +57,7 @@ function Mixtape(props) {
   const classes = useStyles();
   const [songsToDelete, setSongsToDelete] = useState([]);
 
-  const { enableEditing, isEditing, setIsEditing, mixtape, setMixtape, permissions, setPermissions, permissionUserList, setPermissionUserList } = props;
+  const { enableEditing, isEditing, setIsEditing, mixtape, setMixtape } = props;
 
   const { currentSong, setCurrentSong } = useContext(CurrentSongContext);
 
@@ -147,7 +147,7 @@ function Mixtape(props) {
     setCurrentSong({
       mixtape: currentSong?.mixtape,
       index: currentSong?.index,
-      disabled: mixtape._id,
+      disabled: mixtape?._id,
     });
     setPlaying(false);
   }
@@ -230,10 +230,6 @@ function Mixtape(props) {
         setMixtape={setMixtape}
         settingsPopupIsOpen={settingsPopupIsOpen}
         handleSettingsPopup={handleSettingsPopup}
-        permissions={permissions}
-        setPermissions={setPermissions}
-        permissionUserList={permissionUserList}
-        setPermissionUserList={setPermissionUserList}
       />
 
 

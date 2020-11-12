@@ -63,50 +63,25 @@ function ViewMixtapePage(props) {
     const [changeMixtapeNamePopupIsOpen, setchangeMixtapeNamePopupIsOpen] = useState(false); // whether add song popup is open
 
     const prevMixtape = usePrevious(mixtape);
-    useEffect(()=>{
+    useEffect(async ()=> {
         if (
             !_.isEqual(
                 prevMixtape,
                 mixtape,
             )
         ) {
-            getMixtape(props.match.params.id).then((updatedMixtape) => {
-                if (updatedMixtape.songs.length > 0) {
-                    updatedMixtape.duration = updatedMixtape.songs.map(song => song.duration).reduce((mixtapeDuration, songDuration) => mixtapeDuration + songDuration);
-                } else {
-                    updatedMixtape.duration = 0;
+            if (mixtape) {
+                updateMixtape(mixtape);
+                setCoverImageUrl(getMixtapeCoverImageUrl(mixtape._id));
                 }
-                permissions.forEach((permission, i) => {
-                    updatedMixtape.collaborators[i].permissions = permission;
-                });
-                if (!mixtape) {
-                    setPermissions(updatedMixtape.collaborators.map(c => c.permissions));
-                    setPermissionUserList(updatedMixtape.collaborators.map(c => (
-                        { username: c.username, user: c.user }
-                    )));
-                }
-                console.log(updatedMixtape);
-                setMixtape(updatedMixtape);
-                setCoverImageUrl(getMixtapeCoverImageUrl(updatedMixtape._id));
-            });
         }
     }, [mixtape, prevMixtape]);
 
     useEffect(async () => {
-        if (permissions && mixtape) {
-            const newMixtape = { ...mixtape };
-            permissions.forEach((permission, i) => {
-                if (newMixtape.collaborators.length < (i+1)) {
-                    newMixtape.collaborators.push(permissionUserList[i]);
-                }
-                if (newMixtape.collaborators[i])
-                    newMixtape.collaborators[i].permissions = permission;
-            });
-            setMixtape(newMixtape);
-            await updateMixtape(newMixtape);
-            console.log(newMixtape);
-        }
-    }, [permissions]);
+        const initialMixtape = await getMixtape(props.match.params.id);
+        setMixtape(initialMixtape);
+        setCoverImageUrl(getMixtapeCoverImageUrl(initialMixtape._id));
+    }, []);
 
     const handleChangeMixtapeNamePopup = () => {
         setchangeMixtapeNamePopupIsOpen(!changeMixtapeNamePopupIsOpen);
@@ -183,7 +158,7 @@ function ViewMixtapePage(props) {
                 </div>
             </Paper>
             <Grid container justify="center">
-                <Mixtape permissionUserList={permissionUserList} setPermissionUserList={setPermissionUserList} permissions={permissions} setPermissions={setPermissions} enableEditing={true} isEditing={isEditing} setIsEditing={setIsEditing} mixtape={mixtape} setMixtape={setMixtape} />
+                <Mixtape enableEditing={true} isEditing={isEditing} setIsEditing={setIsEditing} mixtape={mixtape} setMixtape={setMixtape} />
             </Grid>
         </div>
     )
