@@ -123,6 +123,11 @@ function SettingsModal(props) {
         setUnsavedCollaborators(newCollaborators);
     }
 
+    const changePublicStatus = () => {
+        mixtape.isPublic = !mixtape.isPublic;
+        setMixtape(mixtape);
+    }
+
     return (
         <Modal
             className={classes.modal}
@@ -212,7 +217,7 @@ function SettingsModal(props) {
                         <Grid container justify="center" alignItems="center" style={{ height: '50%' }}>
                             <Grid item xs={12}>
                                 <FormControlLabel
-                                    control={<Switch checked={true} onChange={() => undefined} name="checkedA" />}
+                                    control={<Switch value={mixtape.isPublic} onChange={changePublicStatus} />}
                                     label="Mixtape Public?"
                                 />
                             </Grid>
