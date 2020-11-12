@@ -126,7 +126,7 @@ function ViewMixtapePage(props) {
         }
     }
 
-    const onSave = async () => {
+    const onSave = () => {
         const changeMixtapeNameTransaction = new ChangeMixtapeName_Transaction(mixtape.name, textFieldValue, mixtape);
         tps.addTransaction(changeMixtapeNameTransaction);
         updateMixtape(mixtape);
@@ -148,7 +148,7 @@ function ViewMixtapePage(props) {
         }
       }
 
-      const undoChangeMixtapeName = async () => {
+      const undoChangeMixtapeName = () => {
         console.log("Undo Change Mixtape Name");
         tps.undoTransaction();
         setMixtape(mixtape);
