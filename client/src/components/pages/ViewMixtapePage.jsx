@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
 import {
     Button, 
@@ -23,6 +23,7 @@ import { getMixtape, getMixtapeCoverImageUrl, updateMixtape } from '../../utils/
 import { Comment as CommentIcon, Share as ShareIcon, ArrowBack as ArrowBackIcon, Edit as EditIcon } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import MixtapeCoverImageUploadModal from '../modals/MixtapeCoverImageUploadModal';
+import UserContext from '../../contexts/UserContext';
 import humanizeDuration from 'humanize-duration';
 
 const usePrevious = (value) => {
@@ -36,12 +37,11 @@ const usePrevious = (value) => {
 
 function ViewMixtapePage(props) {
     const history = useHistory();
-    const goBack = () => { history.push('/') }
+    const goBack = () => history.goBack();
+
+    const { user, setUser } = useContext(UserContext);
 
     const [mixtape, setMixtape] = useState(null);
-
-    const [permissions, setPermissions] = useState([]);
-    const [permissionUserList, setPermissionUserList] = useState([]);
 
     const [open, setOpen] = useState(false);
     
@@ -62,6 +62,7 @@ function ViewMixtapePage(props) {
 
     const [changeMixtapeNamePopupIsOpen, setchangeMixtapeNamePopupIsOpen] = useState(false); // whether add song popup is open
 
+    // watch for changes to mixtape and update server accordingly
     const prevMixtape = usePrevious(mixtape);
     useEffect(async ()=> {
         if (
@@ -77,12 +78,25 @@ function ViewMixtapePage(props) {
         }
     }, [mixtape, prevMixtape]);
 
+    // fetch mixtape from server
     useEffect(async () => {
         const initialMixtape = await getMixtape(props.match.params.id);
+        if (!initialMixtape) {
+            history.push('/');
+            return;
+        }
         initialMixtape.duration = initialMixtape.songs.map(song => song.duration).reduce((total, current) => total + current);
         setMixtape(initialMixtape);
         setCoverImageUrl(getMixtapeCoverImageUrl(initialMixtape._id));
+        for (const collaborator of initialMixtape.collaborators) {
+            if (collaborator.user === user._id) {
+                user.permissions = collaborator.permissions;
+                setUser(user);
+                break;
+            }
+        }
     }, []);
+
 
     const handleChangeMixtapeNamePopup = () => {
         setchangeMixtapeNamePopupIsOpen(!changeMixtapeNamePopupIsOpen);
@@ -98,6 +112,10 @@ function ViewMixtapePage(props) {
 
     const saveName = async () => {
         updateMixtape(mixtape);
+    }
+
+    if (!mixtape) {
+        return null;
     }
 
     return (
