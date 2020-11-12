@@ -143,25 +143,23 @@ function SettingsModal(props) {
                     <Grid item xs={1} />
                     <Grid item xs={4} style={{ height: '70%' }}>
                         <Grid container style={{ height: '80%' }} >
-                            <Typography align="center" variant="h5">Permissions</Typography>
-                            <Grid item xs={12} style={{ borderRadius: '2%', overflow: 'auto', maxHeight: '100%' }}>
+                            <Grid item xs={12}>
+                                <Typography align="center" variant="h5">Permissions</Typography>
+                            </Grid>
+                            <Grid container style={{ borderRadius: '2%', backgroundColor: 'black' }}>
+                                <Grid item xs={6}>
+                                    <Typography style={{color: 'white'}} align="center" variant="h6">User</Typography>
+                                </Grid>
+                                <Grid item xs={5}>
+                                    <Typography style={{color: 'white'}} align="center" variant="h6">Role</Typography>
+                                </Grid>
+                                <Grid item xs={1} style={{ display: showSaveIcon() ? '' : 'none' }}>
+                                    <SaveIcon style={{color: 'white'}} onClick={savePermissions} />
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12} style={{ overflow: 'auto', maxHeight: '100%' }}>
                                 <TableContainer component={Paper}>
                                     <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <StyledTableCell>User</StyledTableCell>
-                                                <StyledTableCell>
-                                                    <Grid container>
-                                                        <Grid item xs={10}>
-                                                            <span>Role</span>
-                                                        </Grid>
-                                                        <Grid item xs={2} style={{ display: showSaveIcon() ? '' : 'none' }}>
-                                                            <SaveIcon onClick={savePermissions} />
-                                                        </Grid>
-                                                    </Grid>
-                                                </StyledTableCell>
-                                            </TableRow>
-                                        </TableHead>
                                         <TableBody>
                                             {mixtape?.collaborators.map((collaborator, index) => (
                                                 <StyledTableRow key={index}>
