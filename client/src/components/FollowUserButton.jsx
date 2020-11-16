@@ -1,11 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Button } from '@material-ui/core';
 import { followUser, unfollowUser } from '../utils/api';
 import UserContext from '../contexts/UserContext';
 
 function FollowUserButton(props) {
     const { user, setUser } = useContext(UserContext);
+    const [disabled, setDisabled] = useState(false);
     const followButtonHandler = async (e) => {
+        setDisabled(true);
         e.stopPropagation();
         let followedUsers;
         if (user.followedUsers.map(u => u._id).includes(props.id)) {
@@ -16,9 +18,11 @@ function FollowUserButton(props) {
         const newUser = { ...user };
         newUser.followedUsers = followedUsers;
         setUser(newUser);
+        setDisabled(false);
     }
     return (
         <Button
+            disabled={disabled}
             variant="contained"
             boxShadow={3}
             style={{
