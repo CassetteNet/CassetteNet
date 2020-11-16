@@ -50,11 +50,17 @@ function ChangePasswordConfirmationModal(props) {
 
     useEffect(() => setDoneDisabled(!isValidInput()), [currentPassword, newPassword, confirmNewPassword]);
 
+    const closeModal = () => {
+        [setCurrentPassword,setNewPassword, setConfirmNewPassword].forEach(setState => setState(''));
+        setDoneDisabled(true);
+        setOpen(false);
+    }
+
     return (
         <Modal
             className={classes.modal}
             open={open}
-            onClose={() => setOpen(false)}
+            onClose={closeModal}
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{
@@ -77,7 +83,7 @@ function ChangePasswordConfirmationModal(props) {
                     </Grid>
                     <Grid item xs={1} />
                     <Grid justify="center" item xs={3}>
-                        <Button variant="outlined">CANCEL</Button>
+                        <Button variant="outlined" onClick={closeModal}>CANCEL</Button>
                     </Grid>
                     <Grid item xs={4} />
                     <Grid justify="center" item xs={3}>
