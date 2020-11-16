@@ -11,14 +11,14 @@ function SongSearchBar(props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { apiToUse, setSelected } = props;
+  const { apiToUse, setSelected, toExclude } = props;
 
   useEffect(() => {
     if (!searchQuery) return; // don't bother calling youtube api if search is empty
     setLoading(true); // make loading circle appear
     songSearch(apiToUse, searchQuery)
       .then(res => {
-        setOptions(res);
+        setOptions(res.filter(s => !toExclude.includes(s.id)));
         setLoading(false);
         console.log(res)
       })
@@ -31,18 +31,15 @@ function SongSearchBar(props) {
     }
   }
 
-  const blurHandler = () => {
-    setLoading(false);
-  }
-
   return (
     <Autocomplete
       // style={{ width: 300 }}
       open={open}
       onOpen={() => setOpen(true)}
       onClose={() => setOpen(false)}
-      getOptionSelected={(option, value) => setSelected(value)}
-      getOptionLabel={(option) => option.name}
+      onChange={(option, value) => setSelected(value)}
+      getOptionLabel={option => option.name}
+      getOptionSelected={(option, value) => option.id === value.id}
       options={options}
       loading={loading}
       clearOnBlur={false}
@@ -50,7 +47,7 @@ function SongSearchBar(props) {
         <TextField
           {...params}
           onKeyPress={() => setLoading(true)}
-          onBlur={blurHandler}
+          onBlur={() => setLoading(false)}
           onChange={debounce((e) => search(e), 500)} // debounce every 700ms to prevent calling api more than needed
           label="Search"
           variant="outlined"
