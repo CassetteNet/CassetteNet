@@ -54,7 +54,7 @@ router.get('/:id/favoritedMixtapes', async (req, res) => {
 router.put('/favoriteMixtape', async (req, res) => {
     if (!req.user) return res.status(401).send(null);
     const { id } = req.body;
-    const user = await User.findOne({ _id: req.user._id });
+    const user = await User.findById(req.user._id);
     if (!user.favoritedMixtapes.includes(id)) {
         user.favoritedMixtapes.push(Types.ObjectId(id));
         await user.save();
@@ -65,12 +65,34 @@ router.put('/favoriteMixtape', async (req, res) => {
 router.put('/unfavoriteMixtape', async (req, res) => {
     if (!req.user) return res.status(401).send(null);
     const { id } = req.body;
-    const user = await User.findOne({ _id: req.user._id });
+    const user = await User.findById(req.user._id);
     if (user.favoritedMixtapes.includes(id)) {
         user.favoritedMixtapes.splice(user.favoritedMixtapes.indexOf(id), 1);
         await user.save();
     }
     return res.send(user.favoritedMixtapes);
+});
+
+router.put('/followUser', async (req, res) => {
+    if (!req.user) return res.status(401).send(null);
+    const { id } = req.body;
+    const user = await User.findById(req.user._id);
+    if (!user.followedUsers.includes(id)) {
+        user.followedUsers.push(Types.ObjectId(id));
+        await user.save();
+    }
+    return res.send(user.followedUsers);
+});
+
+router.put('/unfollowUser', async (req, res) => {
+    if (!req.user) return res.status(401).send(null);
+    const { id } = req.body;
+    const user = await User.findById(req.user._id);
+    if (user.followedUsers.includes(id)) {
+        user.followedUsers.splice(user.followedUsers.indexOf(id), 1);
+        await user.save();
+    }
+    return res.send(user.followedUsers);
 });
 
 router.put('/profilePicture', async (req, res) => {
