@@ -137,8 +137,14 @@ async function requestPasswordReset(email) {
     await axios.put(new URL('/auth/resetPassword', SERVER_ROOT_URL).href, { email });
 }
 
+// reset password by email
 async function resetPassword(token, password) {
     await axios.put(new URL('/auth/resetPassword', SERVER_ROOT_URL).href, { password, token });
+}
+
+// change password through account settings
+async function changePassword(currentPassword, newPassword) {
+    await axios.put(new URL('/auth/changePassword', SERVER_ROOT_URL).href, { currentPassword, newPassword });
 }
 
 async function setUsernameOfOAuthAccount(username) {
@@ -254,6 +260,7 @@ export {
     userVerifyAccount,
     requestPasswordReset,
     resetPassword,
+    changePassword,
     uploadFile,
     adminFillDatabase,
     adminDropDatabase,

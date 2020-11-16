@@ -118,6 +118,7 @@ router.put('/changePassword', async (req, res) => {
         try {
             await user.changePassword(req.body.currentPassword, req.body.newPassword);
             await user.save();
+            return res.send('password changed successfully');
         } catch (err) {
             return res.status(401).send('incorrect password');
         }

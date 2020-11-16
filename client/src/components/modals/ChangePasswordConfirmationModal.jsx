@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import { blueGrey } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
+import { changePassword } from '../../utils/api';
 
 const useStyles = makeStyles((theme) => ({
     modal: {
@@ -56,6 +57,15 @@ function ChangePasswordConfirmationModal(props) {
         setOpen(false);
     }
 
+    const submit = () => {
+        changePassword(currentPassword, newPassword)
+        .then(() => {
+            alert('Password changed successfully.');
+            closeModal();
+        })
+        .catch(err => alert(err?.response?.status === 401 ? 'Current password is not correct.' : err));
+    }
+
     return (
         <Modal
             className={classes.modal}
@@ -87,7 +97,7 @@ function ChangePasswordConfirmationModal(props) {
                     </Grid>
                     <Grid item xs={4} />
                     <Grid justify="center" item xs={3}>
-                        <Button variant="outlined" disabled={doneDisabled}>DONE</Button>
+                        <Button variant="outlined" onClick={submit} disabled={doneDisabled}>DONE</Button>
                     </Grid>
                     <Grid item xs={1} />
                 </Grid>

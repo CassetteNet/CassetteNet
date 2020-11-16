@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AppBar, Box, Button, Grid, Tab, Tabs, Typography, makeStyles, IconButton } from '@material-ui/core';
-import indigo from '@material-ui/core/colors/indigo';
 import blueGrey from '@material-ui/core/colors/blueGrey';
-import pfp from '../../images/bottle_pfp.jpg';
 import fb from '../../images/facebook.png';
 import twitter from '../../images/twitter.jpg';
-import ReactRoundedImage from "react-rounded-image";
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import ReactRoundedImage from 'react-rounded-image';
+import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import UserContext from '../../contexts/UserContext';
 import UserProfilePictureUploadModal from '../modals/UserProfilePictureUploadModal';
