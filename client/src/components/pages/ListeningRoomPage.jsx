@@ -69,31 +69,45 @@ function ListeningRoomPage(props) {
             </Grid>
             <Grid item style={{ width: '80%', backgroundColor: '#30A9ED' }}>
                 <TabPanel value={currentTab} index={0}>
-                    <Grid>
-                        <Grid item xs={10}>
-                            <Paper>
+                    <Grid style={{ height: '70vh' }} container>
+                        <Grid item xs={8}>
+                            <Paper style={{ marginBottom: '2%' }}>
                                 <Typography>
                                     <h1>{"<Listening Room Name>"}</h1>
                                 </Typography>
                                 <Typography variant="h5">~Listening to {mixtape?.name}~</Typography>
                             </Paper>
-                        </Grid>
-                    </Grid>
-                    <Grid style={{ height: '50%' }} container>
-                        <Grid item xs={9}>
                             <Mixtape mixtape={mixtape} enableEditing={false} />
                         </Grid>
-                        <Grid item xs={3} style={{ backgroundColor: '' }}>
-                            <Grid item xs={12} style={{ backgroundColor: 'white', height: '50%' }} >
-                                <Paper style={{ backgroundColor: "#ACDCFF" }}>
-                                    <Typography alignItems="center" variant="h4">Listeners</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12} style={{ backgroundColor: 'white', height: '50%' }} >
-                                <Paper style={{ backgroundColor: "#ACDCFF" }}>
-                                    <Typography alignItems="center" variant="h4">Chat</Typography>
-                                </Paper>
-                            </Grid>
+                        <Grid item xs={1} />
+                        <Grid item xs={3} style={{ backgroundColor: '#ACDCFF', height: '100%' }}>
+                        <Paper style={{ margin: '2%', backgroundColor: "white", height: '48%' }}>
+                                <Grid container style={{height: '10%'}}>
+                                    <Typography style={{ fontSize: '2em' }} alignItems="center">Listeners</Typography>
+                                </Grid>
+                                <Grid container style={{height: '5%'}} />
+                                <Grid direction="row" container style={{ height: 'calc(95% - 2em)', overflow: 'auto' }}>
+                                    <Grid container>
+                                        <Grid item xs={12} style={{}}>
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 2, 3, 4, 5, 6, 7, 3, 33].map(e => <Typography>Test</Typography>)}
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                            <Paper style={{ margin: '2%', backgroundColor: "white", height: '48%' }}>
+                                <Grid container style={{height: '10%'}}>
+                                    <Typography style={{ fontSize: '2em' }} alignItems="center">Chat</Typography>
+                                </Grid>
+                                <Grid container style={{height: '5%'}} />
+                                <Grid direction="row" container style={{ height: 'calc(95% - 2em)', overflow: 'auto' }}>
+                                    <Grid container>
+                                        <Grid item xs={12} style={{}}>
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 2, 3, 4, 5, 6, 7, 3, 33].map(e => <Typography>Test</Typography>)}
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+
                         </Grid>
                     </Grid>
                 </TabPanel>
