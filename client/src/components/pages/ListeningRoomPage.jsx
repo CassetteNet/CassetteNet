@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 function ListeningRoomPage(props) {
     const { setCurrentSong } = useContext(CurrentSongContext);
 
+    const [listeningRoom, setListeningRoom] = useState(null);
     const [mixtape, setMixtape] = useState(null);
     const [currentTab, setCurrentTab] = useState(0);
 
@@ -51,8 +52,9 @@ function ListeningRoomPage(props) {
     useEffect(() => {
         getListeningRoom(props.match.params.id)
             .then(lr => {
+                setListeningRoom(lr);
                 getMixtape(lr.mixtape)
-                    .then(mixtape => setMixtape(mixtape));
+                .then(mixtape => setMixtape(mixtape));
             })
             .catch(err => alert(err));
     }, []);
@@ -89,7 +91,7 @@ function ListeningRoomPage(props) {
                                 <Grid direction="row" container style={{ height: 'calc(95% - 2em)', overflow: 'auto' }}>
                                     <Grid container>
                                         <Grid item xs={12} style={{}}>
-                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 2, 3, 4, 5, 6, 7, 3, 33].map(e => <Typography>Test</Typography>)}
+                                            {listeningRoom?.currentListeners.map(u => <Typography>{u.username}</Typography>)}
                                         </Grid>
                                     </Grid>
                                 </Grid>

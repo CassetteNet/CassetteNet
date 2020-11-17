@@ -1,5 +1,5 @@
 const express = require('express');
-const { ListeningRoom, Mixtape } = require('../models');
+const { ListeningRoom, Mixtape, User } = require('../models');
 
 const router = express.Router();
 
@@ -18,6 +18,7 @@ function isAuthorized(user, mixtape) {
     }
     return false;
 }
+
 
 /**
  * Create a listening room
@@ -54,8 +55,18 @@ router.post('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const listeningRoom = await ListeningRoom.findById(req.params.id).lean();
+        const listenersDenormalized = [];
+        for (const userId of listeningRoom.currentListeners) {
+            const user = await User.findById(userId).lean();
+            listenersDenormalized.push({
+                id: user._id,
+                username: user.username,
+            });
+        }
+        listeningRoom.currentListeners = listenersDenormalized;
         return res.send(listeningRoom);
     } catch (err) {
+        console.log(err);
         return res.status(404).send('listening room not found');
     }
 });
