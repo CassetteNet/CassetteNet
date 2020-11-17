@@ -52,7 +52,12 @@ router.post('/', async (req, res) => {
  * Get info about a listening room
  */
 router.get('/:id', async (req, res) => {
-    
+    try {
+        const listeningRoom = await ListeningRoom.findById(req.params.id).lean();
+        return res.send(listeningRoom);
+    } catch (err) {
+        return res.status(404).send('listening room not found');
+    }
 });
 
 
