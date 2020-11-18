@@ -10,10 +10,10 @@ try {
     SERVER_ROOT_URL = new URL('http://localhost:5000/');
 }
 
-async function joinListeningRoom(listeningRoomId) {
-    await axios.put(new URL(`/api/listeningroom/${listeningRoomId}/join`, SERVER_ROOT_URL).href);
+async function checkInToListeningRoom(listeningRoomId) {
+    await axios.put(new URL(`/api/listeningroom/${listeningRoomId}/checkIn`, SERVER_ROOT_URL).href);
 }
 
 export {
-    joinListeningRoom,
+    checkInToListeningRoom,
 }

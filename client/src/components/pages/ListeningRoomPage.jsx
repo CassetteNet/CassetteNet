@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Mixtape from '../Mixtape';
 import CurrentSongContext from '../../contexts/CurrentSongContext';
 import { getMixtape, getListeningRoom } from '../../utils/api';
-import { joinListeningRoom } from '../../utils/sockets';
+import { checkInToListeningRoom } from '../../utils/sockets';
 import socketIOClient from 'socket.io-client';
 
 
@@ -46,36 +46,42 @@ function ListeningRoomPage(props) {
     const { setCurrentSong } = useContext(CurrentSongContext);
 
     const [listeningRoom, setListeningRoom] = useState(null);
-    const [listeners, setListeners] = useState(null);
     const [mixtape, setMixtape] = useState(null);
     const [currentTab, setCurrentTab] = useState(0);
 
     const handleTabChange = (e, val) => setCurrentTab(val);
 
     useEffect(() => {
-        joinListeningRoom(props.match.params.id).then(() => {
-            getListeningRoom(props.match.params.id)
-                .then(lr => {
-                    setListeningRoom(lr);
-                    setListeners(lr.currentListeners);
-                    getMixtape(lr.mixtape)
-                        .then(mixtape => setMixtape(mixtape));
-                })
-        })
+        checkInToListeningRoom(props.match.params.id)
+            .then(() => {
+                getListeningRoom(props.match.params.id)
+                    .then(lr => {
+                        setListeningRoom(lr);
+                        getMixtape(lr.mixtape)
+                            .then(mixtape => setMixtape(mixtape));
+                    })
+            })
             .catch(err => alert(err));
+        setInterval(() => {
+            checkInToListeningRoom(props.match.params.id).then(() => {
+                getListeningRoom(props.match.params.id).then(lr => setListeningRoom(lr));
+            })
+        }, 5000);
+
     }, []);
+
+
 
     useEffect(() => {
         const socket = socketIOClient('http://localhost:5000');
-        socket.on('userJoined', user => {
+        socket.on('userJoined', () => {
             getListeningRoom(props.match.params.id)
-            .then(lr => {
-                setListeningRoom(lr);
-                setListeners(lr.currentListeners);
-            })
-            .catch(err => alert(err));
+                .then(lr => {
+                    setListeningRoom(lr);
+                })
+                .catch(err => alert(err));
         });
-    });
+    }, []);
 
     return (
         <Grid container justify="center">
