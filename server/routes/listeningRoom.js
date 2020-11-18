@@ -20,6 +20,24 @@ function isAuthorized(user, mixtape) {
 }
 
 
+router.put('/:id/join', async (req, res) => {
+    if (!req.user) return res.status(401).send('unauthorized');
+    try {
+        const listeningRoom = await ListeningRoom.findById(req.params.id);
+        if (!listeningRoom) return res.status(404).send('not found');
+        if (!listeningRoom.currentListeners.includes(req.user.id)) {
+            listeningRoom.currentListeners.push(req.user.id);
+            await listeningRoom.save();
+            const io = req.app.get('socketIO');
+            io.emit('userJoined', { username: req.user.username, uniqueId: req.user.uniqueId });
+        }
+        return res.send('joined');
+    } catch(err) {
+        console.log(err);
+        return res.status(500).send(err);
+    }
+});
+
 /**
  * Create a listening room
  */
@@ -36,7 +54,7 @@ router.post('/', async (req, res) => {
     }
 
     const listeningRoom = new ListeningRoom({
-        currentListeners: [req.user.id],
+        currentListeners: [],
         mixtape: mixtapeId,
         currentSong: 0,
         snakeScores: [],
