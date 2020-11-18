@@ -28,8 +28,6 @@ const store = new MongoDBStore({
 
 const app =  express();
 
-app.use(express.static('build'));
-
 app.set('trust proxy', 1) // trust first proxy (needed for netlify)
 app.use(cors({ credentials: true, origin: process.env.ALLOWED_ORIGIN || 'http://localhost:3000' }));
 app.use(fileUpload({
@@ -59,6 +57,9 @@ app.use('/api/mixtape', mixtapeRoute);
 app.use('/api/soundcloud', soundcloudRoute);
 app.use('/api/user', userRoute);
 app.use('/api/youtube', youtubeRoute);
+
+app.use('/', express.static('build'));
+app.get('*', (req, res) => res.sendFile('index.html', { root: path.join(__dirname, 'build') }));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
