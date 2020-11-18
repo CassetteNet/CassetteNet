@@ -28,6 +28,8 @@ const store = new MongoDBStore({
 
 const app =  express();
 
+app.use(express.static('build'));
+
 app.set('trust proxy', 1) // trust first proxy (needed for netlify)
 app.use(cors({ credentials: true, origin: process.env.ALLOWED_ORIGIN || 'http://localhost:3000' }));
 app.use(fileUpload({
