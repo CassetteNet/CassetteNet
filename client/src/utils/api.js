@@ -244,6 +244,11 @@ async function sendAnonymousMessage(mixtapeId, recipient, message) {
     await axios.post(new URL('/api/user/sendMessage', SERVER_ROOT_URL).href, { recipient, message, mixtapeId });
 }
 
+async function deleteInboxMessage(messageId) {
+    const messages = await axios.delete(new URL(`/api/user/deleteMessage/${messageId}`, SERVER_ROOT_URL).href);
+    return messages.data;
+}
+
 async function getInboxMessages() {
     const messages = await axios.get(new URL('/api/user/inboxMessages', SERVER_ROOT_URL).href);
     return messages.data;
@@ -296,5 +301,6 @@ export {
     createListeningRoom,
     getListeningRoom,
     sendAnonymousMessage,
+    deleteInboxMessage,
     getRandomMixtapes,
 };
