@@ -249,6 +249,11 @@ async function getInboxMessages() {
     return messages.data;
 }
 
+async function getRandomMixtapes(count) {
+    const mixtapes = await axios.get(new URL('/api/mixtape/random', SERVER_ROOT_URL).href, { params: { count } });
+    return mixtapes.data;
+}
+
 export {
     createMixtape,
     deleteMixtape,
@@ -291,4 +296,5 @@ export {
     createListeningRoom,
     getListeningRoom,
     sendAnonymousMessage,
+    getRandomMixtapes,
 };
