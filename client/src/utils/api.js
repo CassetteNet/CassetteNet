@@ -241,7 +241,7 @@ async function getListeningRoom(listeningRoomId) {
 }
 
 async function sendAnonymousMessage(mixtapeId, recipient, message) {
-    await axios.post(new URL('/api/user/sendMessage').href, { recipient, message, mixtapeId });
+    await axios.post(new URL('/api/user/sendMessage', SERVER_ROOT_URL).href, { recipient, message, mixtapeId });
 }
 
 async function getInboxMessages() {

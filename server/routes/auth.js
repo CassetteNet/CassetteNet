@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 const crypto = require('crypto');
-const { User } = require('../models');
+const { InboxMessage, User } = require('../models');
 const { sendPasswordResetEmail, sendVerificationEmail } = require('../email/email');
 
 const router = express.Router();
@@ -148,7 +148,7 @@ router.get('/login/success', async (req, res) => {
         });
     }
     const followers = (await User.find({ followedUsers: _id })).length;
-    const inboxMessages = await InboxMessage.find({ recipient: _id }).lean();
+    const inboxMessages = await InboxMessage.find({ recipient: req.user.id }).lean();
     res.json({
         _id,
         favoritedMixtapes,
