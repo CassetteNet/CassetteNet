@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Box, Divider, Grid, IconButton, List, ListItem, ListItemText, ListItemAvatar, Typography } from '@material-ui/core';
 import { blueGrey } from '@material-ui/core/colors';
@@ -26,7 +26,13 @@ function InboxPage() {
         user = JSON.parse(localStorage.getItem('user'));
     }
 
-    const messages = getInboxMessages(user._id);
+    const [messages, setMessages] = useState([]);
+
+    useEffect(() => {
+        getInboxMessages()
+            .then(messages => setMessages(messages))
+            .catch(err => alert(err));
+    });
 
     const history = useHistory();
     const goBack = () => { history.push('/') }

@@ -2,7 +2,7 @@ const express = require('express');
 const avatars = require('avatars');
 const jimp = require('jimp');
 const { Types } = require('mongoose');
-const { Mixtape, User } = require('../models');
+const { InboxMessage, Mixtape, User } = require('../models');
 
 const router = express.Router();
 
@@ -162,6 +162,24 @@ router.get('/:id/profilePicture', async (req, res) => {
     } else {
         res.status(404).send('user not found');
     }
+});
+
+router.post('/sendMessage', async (req, res) => {
+    if (!req.user) return res.status(401).send('unauthorized');
+    if (!req.body.message || !req.body.recipient) return res.status(400).send();
+    const { message, mixtapeId, recipient } = req.body;
+    const inboxMessage = {
+        mixtape: mixtapeId,
+        message,
+        recipient,
+    };
+    try {
+        const inboxMessageDb = await InboxMessage.create(inboxMessage);
+        res.send(inboxMessage._id);
+    } catch(err) {
+        res.status(500).send(err);
+    }
+    
 });
 
 // Get info about any user. Exclude sensitive fields since this is public.

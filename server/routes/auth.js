@@ -148,6 +148,7 @@ router.get('/login/success', async (req, res) => {
         });
     }
     const followers = (await User.find({ followedUsers: _id })).length;
+    const inboxMessages = await InboxMessage.find({ recipient: _id }).lean();
     res.json({
         _id,
         favoritedMixtapes,
@@ -158,6 +159,7 @@ router.get('/login/success', async (req, res) => {
         admin,
         createdAt,
         updatedAt,
+        inboxMessages,
     });
 });
 
