@@ -37,6 +37,7 @@ router.post('/', async (req, res) => {
     }
 
     const listeningRoom = new ListeningRoom({
+        chatMessages: [],
         currentListeners: [],
         listenerMapping: new Map(),
         mixtape: mixtapeId,
