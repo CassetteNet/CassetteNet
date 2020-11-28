@@ -106,7 +106,7 @@ function ListeningRoomPage(props) {
                         <Grid item xs={8}>
                             <Paper style={{ marginBottom: '2%' }}>
                                 <Typography>
-                                    <h1>{"<Listening Room Name>"}</h1>
+                                    <h1>{`${listeningRoom?.owner.username}'s Listening Room`}</h1>
                                 </Typography>
                                 <Typography variant="h5">~Listening to {mixtape?.name}~</Typography>
                             </Paper>
