@@ -98,14 +98,13 @@ function ListeningRoomPage(props) {
         getListeningRoom(props.match.params.id)
             .then(listeningRoom => {
                 setListeningRoom(listeningRoom);
-                getMixtape(listeningRoom.mixtape).then(mixtape => setMixtape(mixtape));
+                setMixtape(listeningRoom.mixtape);
                 socket.emit('joinListeningRoom', { user, listeningRoom });
                 socket.on('userJoinedOrLeft', () => {
                     getListeningRoom(props.match.params.id)
                         .then(lr => {
                             setListeningRoom(lr);
-                            console.log(lr);
-                            getMixtape(lr.mixtape).then(mixtape => setMixtape(mixtape));
+                            setMixtape(lr.mixtape);
                         })
                         .catch(err => alert(err));
                 });
@@ -119,7 +118,7 @@ function ListeningRoomPage(props) {
                     setTimeout(history.goBack, 4000);
                 });
             })
-            .catch(err => console.log(err));
+            .catch(err => history.goBack());
     }, []);
 
     const [currentChatText, setCurrentChatText] = useState('');
