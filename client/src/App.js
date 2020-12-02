@@ -114,7 +114,7 @@ function App() {
                 <AtmosphereSoundContext.Provider value={{atmosphereSound, setAtmosphereSound}}>
                   <BrowserRouter>
                       <PageFrame invisible={!user?.isLoggedIn} />
-                        <div style={{ marginBottom: '105px', position: 'absolute', left: 8*9, height: 'calc(100vh - 8*9)', width: 'calc(100vw - 73px)'}}>
+                        <div style={{ marginBottom: '105px', position: 'absolute', left: 8*9, height: 'calc(100vh - 8*9)', width: '90%'}}>
                           <Switch>
                             <Route exact path="/" component={DashboardPage} />
                             <Route exact path="/directory" component={Directory} /> {/* TODO: remove? */}
