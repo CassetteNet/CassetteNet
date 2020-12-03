@@ -114,9 +114,12 @@ function MixtapeSearchResultsPage(props) {
             <br />
             <br />
             <Typography style={{ marginLeft: '100px', textAlign: "left" }} variant="h4">Search results for "{new URLSearchParams(props.location.search).get('query')}" ({totalResults}):</Typography>
-            <Paper style={{display: 'inline-block'}}>
+            {totalPages > 1 ?
+                <Paper style={{display: 'inline-block'}}>
                     <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
-            </Paper>
+                </Paper>
+                : undefined
+            }
             <Grid container >
                 <Box style={{
                     maxHeight: '60vh',
@@ -172,9 +175,12 @@ function MixtapeSearchResultsPage(props) {
                 }}>
                     <MixtapeRows mixtapes={mixtapes} />
                 </Box>
-            <Paper style={{display: 'inline-block'}}>
-                <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
-            </Paper>
+            {totalPages > 1 ?
+                <Paper style={{display: 'inline-block'}}>
+                    <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
+                </Paper>
+                : undefined
+            }
             </Grid>
         </div>
     )

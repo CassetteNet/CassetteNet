@@ -35,13 +35,19 @@ function UserSearchResults(props) {
         return (
             <div style={{ width: "70%", margin: 'auto', marginTop: '4%' }}>
                 <Typography style={{color: 'white'}} variant="h5">Search results for "{new URLSearchParams(props.location.search).get('query')}" ({totalResults}):</Typography>
-                <Paper style={{display: 'inline-block'}}>
-                    <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
-                </Paper>
+                {totalPages > 1 ?
+                    <Paper style={{display: 'inline-block'}}>
+                        <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
+                    </Paper>
+                    : undefined
+                }
                 <UserList users={users} />
-                <Paper style={{display: 'inline-block'}}>
-                    <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
-                </Paper>
+                {totalPages > 1 ?
+                    <Paper style={{display: 'inline-block'}}>
+                        <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
+                    </Paper>
+                    : undefined
+                }
             </div>
         );
     }
