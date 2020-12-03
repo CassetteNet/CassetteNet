@@ -241,8 +241,8 @@ async function userSearch(searchQuery, page) {
     return users.data;
 }
 
-async function mixtapeSearch(searchQuery) {
-    const mixtapes = await axios.get(new URL('/api/mixtape/search', SERVER_ROOT_URL).href, { params: { query: searchQuery } });
+async function mixtapeSearch(searchQuery, page) {
+    const mixtapes = await axios.get(new URL('/api/mixtape/search', SERVER_ROOT_URL).href, { params: { query: searchQuery, page } });
     return mixtapes.data;
 }
 

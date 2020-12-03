@@ -73,6 +73,7 @@ const mixtapeSchema = new Schema({
   isPublic: Boolean,
 });
 
+mixtapeSchema.plugin(mongoosePaginate);
 mixtapeSchema.plugin(mongoosePartialTextSearch);
 songSchema.plugin(mongoosePartialTextSearch);
 
