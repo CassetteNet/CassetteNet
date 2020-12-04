@@ -442,7 +442,8 @@ function ViewMixtapePage(props) {
                     <TextField
                         multiline
                         rows={17}
-                        style={{ height: '300px', width: '400px' }}
+
+                        style={{ width: '400px' }}
                         autoFocus
                         variant="filled"
                         margin="dense"
@@ -450,6 +451,8 @@ function ViewMixtapePage(props) {
                         label="Message"
                         type="email"
                         fullWidth
+                        inputProps={{ maxLength: 250 }}
+                        helperText={`${message.length}/250 characters`}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                     />
