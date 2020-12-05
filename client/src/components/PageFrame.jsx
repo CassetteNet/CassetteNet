@@ -111,7 +111,7 @@ function PageFrame(props) {
   };
 
 
-  if (props.invisible) {
+  if (!user.isLoggedIn) {
     return (<div />);
   }
   return (
