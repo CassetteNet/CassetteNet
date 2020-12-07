@@ -31,7 +31,6 @@ const store = new MongoDBStore({
 
 const app =  express();
 
-app.set('trust proxy', 1) // trust first proxy (needed for netlify)
 app.use(fileUpload({
     limits: { fileSize: 50 * 1024 * 1024 }, // TODO: decide on file size limit
 }));
@@ -44,8 +43,8 @@ app.use(session({ // initialize login sessions
     saveUninitialized: false,
     cookie: {
         maxAge: 86400000, // expire in one day
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        secure: false,
+        sameSite: 'none',
     },
     store,
 }));
