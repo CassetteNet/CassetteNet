@@ -65,6 +65,10 @@ function initSockets(io) {
                 io.in(lrId).emit('endListeningRoom');
                 await lr.deleteOne();
             }
+
+            const userDb = await User.findById(user._id);
+            userDb.set('socketId', null);
+            await userDb.save();
         });
 
         socket.on('sendInboxMessage', async ({ recipientId }) => {
