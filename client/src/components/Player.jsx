@@ -93,11 +93,11 @@ function Player(props) {
     }
   }, 2000);
 
-  setInterval(() => {
-    if (playerRef.current && playing) {
-      setCurrentTime(playerRef.current.getCurrentTime());
-    }
-  }, 500);
+  // setInterval(() => {
+  //   if (playerRef.current && playing) {
+  //     setCurrentTime(playerRef.current.getCurrentTime());
+  //   }
+  // }, 500);
 
   const { currentSong, setCurrentSong } = useContext(CurrentSongContext);
 

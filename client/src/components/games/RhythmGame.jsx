@@ -27,6 +27,8 @@ function RhythmGame({ xStart, xEnd, listeningRoom }) {
 
     const [startNewAnimation, setStartNewAnimation] = useState(false);
 
+    const [red, setRed] = useState(false);
+
     const onAnimationEnd = (a) => {
         setStartNewAnimation(true)
         setFirstBeatDone(true);
@@ -43,6 +45,20 @@ function RhythmGame({ xStart, xEnd, listeningRoom }) {
         return null;
     }
 
+    const c1Style = {
+        background: red ? 'red' : 'steelblue',
+        color: 'white',
+        height: '100px',
+        width: `${BOX_WIDTH}px`,
+    }
+
+    const c2Style = {
+        background: 'steelblue',
+        color: 'white',
+        height: '100px',
+        width: `${BOX_WIDTH}px`,
+    }
+
     return (
         <div>
             <Spring
@@ -55,7 +71,7 @@ function RhythmGame({ xStart, xEnd, listeningRoom }) {
             >
                 {props => (
                     <div style={props}>
-                        <div style={{ position: 'absolute', left: `${props.x}px`, ...c1Style }} />
+                        <div style={{ position: 'absolute', left: `${props.x}px`, ...c2Style }} />
                     </div>
                 )}
             </Spring>
@@ -65,6 +81,9 @@ function RhythmGame({ xStart, xEnd, listeningRoom }) {
                     to={{ position: 'absolute', left: xEnd - BOX_WIDTH }}
                     config={{ duration: beatDuration * 1000 }}
                     reset={startNewAnimation}
+                    onStart={() => setRed(true)}
+                    onFrame={(s) => s.left > ((xEnd+xStart)/2)-(BOX_WIDTH/2) + 20 ? setRed(false) : undefined}
+                    // onFrame={(s) => console.log(s.left, ((xEnd+xStart)/2)-(BOX_WIDTH/2))}
                 >
                     {props => (
                         <div style={props}>
@@ -75,13 +94,6 @@ function RhythmGame({ xStart, xEnd, listeningRoom }) {
                 : undefined}
         </div>
     )
-}
-
-const c1Style = {
-    background: 'steelblue',
-    color: 'white',
-    height: '100px',
-    width: `${BOX_WIDTH}px`,
 }
 
 export default RhythmGame;
