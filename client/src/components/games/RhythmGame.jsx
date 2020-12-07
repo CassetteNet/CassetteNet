@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Spring } from 'react-spring/renderprops';
+import { getSpotifyAudioAnalysis } from '../../utils/api';
 
 function setExactInterval(handler, time) {
     var startTime = Date.now();
@@ -17,9 +18,9 @@ function setExactInterval(handler, time) {
 
 const BOX_WIDTH = 25; // width of animated boxes in pixels
 
-function RhythmGame({ xStart, xEnd }) {
-    const tempo = 148 / 2;// props.tempo;
-    const bps = tempo / 60; // beats per second
+function RhythmGame({ xStart, xEnd, listeningRoom }) {
+    const [bpm, setBpm] = useState(-1);
+    const bps = bpm / 60; // beats per second
     const beatDuration = 1 / bps; // how long a square should take to get from the beginning of screen to middle
 
     const [firstBeatDone, setFirstBeatDone] = useState(false);
@@ -31,7 +32,14 @@ function RhythmGame({ xStart, xEnd }) {
         setFirstBeatDone(true);
     }
 
-    if (!xStart || !xEnd) {
+    useEffect(() => {
+        getSpotifyAudioAnalysis(listeningRoom._id, listeningRoom.currentSong)
+            .then(newBpm => {
+                setBpm(newBpm);
+            });
+    }, []);
+
+    if (!xStart || !xEnd || bpm < 0) {
         return null;
     }
 

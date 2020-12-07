@@ -295,7 +295,7 @@ async function getRandomMixtapes(count, type) {
 }
 
 async function getSpotifyAudioAnalysis(listeningRoomId, songIndex) {
-    const analysis = await axios.get(new URL(`/api/listeningroom/${listeningRoomId}/audioAnalysis/${songIndex}`));
+    const analysis = await axios.get(new URL(`/api/listeningroom/${listeningRoomId}/audioAnalysis/${songIndex}`, SERVER_ROOT_URL).href);
     return analysis.data;
 }
 
