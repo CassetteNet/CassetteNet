@@ -18,10 +18,10 @@ import {
     TextField,
     Toolbar,
     Typography,
-
 } from '@material-ui/core';
 import Mixtape from '../Mixtape';
 import FavoriteMixtapeButton from '../FavoriteMixtapeButton';
+import MixtapeComments from '../MixtapeComments';
 import { createListeningRoom, forkMixtape, getMixtape, getMixtapeCoverImageUrl, updateMixtape, getSongDuration } from '../../utils/api';
 import JSTPSContext from '../../contexts/JSTPSContext';
 import { ChangeMixtapeName_Transaction } from '../transactions/ChangeMixtapeName_Transaction';
@@ -573,6 +573,9 @@ function ViewMixtapePage(props) {
                         setMixtape={setMixtape}
                         listeningRoom={false}
                     />
+                </Grid>
+                <Grid item xs={12} style={{ width: '90%' }}>
+                    <MixtapeComments mixtape={mixtape} setMixtape={setMixtape} />
                 </Grid>
             </Grid>
             <div style={{ display: isEditing ? '' : 'none' }}>

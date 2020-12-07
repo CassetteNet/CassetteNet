@@ -71,6 +71,7 @@ const mixtapeSchema = new Schema({
     select: false,
   },
   isPublic: Boolean,
+  comments: Array, // { comment: String, createdAt: Date }
 });
 
 mixtapeSchema.plugin(mongoosePaginate);

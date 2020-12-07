@@ -297,6 +297,11 @@ async function getSongTempo(listeningRoomId, songIndex) {
     return analysis.data;
 }
 
+async function commentOnMixtape(mixtapeId, comment) {
+    const comments = await axios.post(new URL(`/api/mixtape/${mixtapeId}/comment`, SERVER_ROOT_URL).href, { comment });
+    return comments.data;
+}
+
 export {
     createMixtape,
     deleteMixtape,
@@ -346,5 +351,6 @@ export {
     deleteInboxMessage,
     getRandomMixtapes,
     getSongTempo,
+    commentOnMixtape,
     SERVER_ROOT_URL,
 };
