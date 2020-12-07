@@ -31,6 +31,7 @@ import { getMixtape, getListeningRoom, getUserProfilePictureUrl, sendListeningRo
 import logo from '../../images/logo.png';
 import '../styles/chatbox.css';
 import { ChatBox } from 'react-chatbox-component';
+import RhythmGame from '../games/RhythmGame';
 
 
 function TabPanel(props) {
@@ -157,6 +158,19 @@ function ListeningRoomPage(props) {
         }
     }, [listeningRoom]);
 
+    const gameScreenRef = React.useRef();
+
+    const [gameScreenStartX, setGameScreenStartX] = useState(null);
+    const [gameScreenEndX, setGameScreenEndX] = useState(null);
+
+    useEffect(() => {
+        if (gameScreenRef?.current) {
+            const { offsetLeft, clientWidth } = gameScreenRef.current;
+            setGameScreenStartX(offsetLeft);
+            setGameScreenEndX(offsetLeft + clientWidth)
+        }
+    });
+
     if (!listeningRoom) {
         return null;
     }
@@ -232,12 +246,11 @@ function ListeningRoomPage(props) {
                                 <Grid style={{ backgroundColor: 'red' }} item xs={12}>
                                     <Typography variant="h7">Invite</Typography>
                                 </Grid>
-                                {/* TODO: remove backgroundColors. just there for now to help with development */}
                                 <Grid style={{ height: '75vh' }} item xs={12}>
                                     <Grid container style={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-                                        <Paper style={{ height: '90%', width: '95%', backgroundColor: '#6FE5FF' }}>
+                                        <Paper ref={gameScreenRef} style={{ height: '90%', width: '95%', backgroundColor: '#6FE5FF' }}>
                                             <Grid container style={{ height: '90%', display: 'flex', justifyContent: 'center', marginTop: '5%' }}>
-                                                <Grid item xs={2} />
+                                                {/* <Grid item xs={2} />
                                                 <Grid item xs={10}>
                                                     <Paper variant="outlined" style={{ background: '#305B8D', color: 'white', height: '70%', width: '80%' }}>
                                                         <Typography variant="h5">Select the game you want to play:</Typography>
@@ -261,7 +274,8 @@ function ListeningRoomPage(props) {
                                                         <Button style={{ height: '100%', width: '100%' }} variant="contained">Start Game</Button>
                                                     </Grid>
                                                     <Grid style={{ backgroundColor: 'orange' }} item xs={4} />
-                                                </Grid>
+                                                </Grid> */}
+                                                <RhythmGame xStart={gameScreenStartX} xEnd={gameScreenEndX} />
                                             </Grid>
                                         </Paper>
                                     </Grid>
