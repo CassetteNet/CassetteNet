@@ -78,7 +78,6 @@ mixtapeSchema.plugin(mongoosePartialTextSearch);
 songSchema.plugin(mongoosePartialTextSearch);
 
 const inboxMessageSchema = new Schema({
-  mixtape: mongoose.Types.ObjectId, // id of the mixtape this message corresponds to
   senderUsername: {
     type: String,
     default: 'Anonymous'

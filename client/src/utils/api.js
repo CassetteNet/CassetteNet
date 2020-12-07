@@ -262,12 +262,12 @@ async function getListeningRoom(listeningRoomId) {
     return listeningRoom.data;
 }
 
-async function sendAnonymousMessage(mixtapeId, recipient, message) {
-    await axios.post(new URL('/api/user/sendMessage', SERVER_ROOT_URL).href, { recipient, message, mixtapeId, isAnonymous: true });
+async function sendAnonymousMessage(recipient, message) {
+    await axios.post(new URL('/api/user/sendMessage', SERVER_ROOT_URL).href, { recipient, message, isAnonymous: true });
 }
 
-async function sendMixtapeMessage(mixtapeId, recipient, message) {
-    await axios.post(new URL('/api/user/sendMessage', SERVER_ROOT_URL).href, { recipient, message, mixtapeId, isAnonymous: false });
+async function sendMixtapeMessage(recipient, message) {
+    await axios.post(new URL('/api/user/sendMessage', SERVER_ROOT_URL).href, { recipient, message, isAnonymous: false });
 }
 
 async function deleteInboxMessage(messageId) {
