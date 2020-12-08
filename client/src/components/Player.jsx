@@ -335,7 +335,7 @@ function Player(props) {
         />
       </Grid>
       <ReactPlayer
-        // onEnded={() => loop ? playerRef.current.seekTo(0) : handleNextSong()}
+        onEnded={() => loop ? playerRef.current.seekTo(0) : handleNextSong()}
         ref={playerRef} playing={playing} style={{ display: 'none' }}
         url={currentSong?.mixtape?.songs[currentSong.index].playbackUrl}
         volume={musicVolume}
