@@ -106,6 +106,12 @@ router.post('/', async (req, res) => {
         rhythmScores: new Map(),
     });
 
+    console.log( { 
+        type: mixtape.songs[0].type,
+        id: mixtape.songs[0].id,
+        getTempo: false, // not possible to play rhythm game on first song in LR, so no need for tempo.
+    })
+
     let stream;
     try {
         stream = await axios.post(new URL('/startStream', STREAM_SERVER_ROOT_URL).href, 
