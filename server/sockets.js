@@ -121,7 +121,6 @@ function initSockets(io) {
                     console.log(err.message);
                     return;
                 }
-                console.log(stream.data)
                 const { listeningRoomPlaybackId, tempo } = stream.data;
                 const listeningRoomPlaybackUrl = new URL(`/stream/live/${listeningRoomPlaybackId}.flv`, STREAM_SERVER_ROOT_URL).href;
                 listeningRoom.mixtape.songs[index].listeningRoomPlaybackUrl = listeningRoomPlaybackUrl;
