@@ -2,9 +2,8 @@ const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
 const { Types } = require('mongoose');
-const { parse, toSeconds } = require('iso8601-duration');
 const Avatar = require('avatar-builder');
-const { getPlaylistVideos, getVideoInfo } = require('../external_apis/youtube');
+const ytpl = require('ytpl');
 const userTestData = require('./users.json');
 const { Mixtape, User } = require('../models');
 
@@ -48,6 +47,7 @@ const SAMPLE_PLAYLISTS = [
     'PLs_BtJUr-PzQQLWIg82WdIOyYs0An9jzi',
     'PLR7sPawuzFmKc1Q0dFwbawJASpUo8Kggp',
     'PLDIoUOhQQPlXr63I_vwF9GD8sAKh77dWU',
+    'PL4o29bINVT4EG_y-k5jGoOu3-Am8Nvi10',
 ];
 
 const AVATAR_TYPES = [
@@ -78,6 +78,18 @@ const randInt = (min, max) => Math.floor(Math.random() * (Math.floor(max) - Math
 // returns true or false randomly
 const coinFlip = () => Boolean(randInt(0,2));
 
+const getSecondsFromMS = (s) => {
+    const splt = s.split(':');
+    if (splt.length === 3) {
+        return Number(splt[0]) * 3600 + Number(splt[1]) * 60 + Number(splt[2]);
+    } else if (splt.length === 2) {
+        return Number(splt[0]) * 60 + Number(splt[1]);
+    } else if (splt.length === 1) {
+        return Number(splt[0]);
+    } else {
+        return 0;
+    }
+}
 
 async function generateMixtapes() {
     const mixtapes = [];
@@ -86,22 +98,18 @@ async function generateMixtapes() {
         let songs = [];
         let playlistId = SAMPLE_PLAYLISTS[i];
         try {
-            const playlist = await getPlaylistVideos(playlistId);
+            const playlist = await ytpl(playlistId);
             songs = playlist.items
-                    .filter(entry => entry.snippet.resourceId.kind === 'youtube#video')
                     .map(entry => ({
-                        name: entry.snippet.title,
-                        id: entry.snippet.resourceId.videoId,
-                        coverImage: entry.snippet?.thumbnails?.default.url,
+                        name: entry.title,
+                        id: entry.id,
+                        coverImage: entry.bestThumbnail.url,
                         type: 'youtube',
-                        playbackUrl: `https://www.youtube.com/watch?v=${entry.snippet.resourceId.videoId}`,
+                        playbackUrl: `https://www.youtube.com/watch?v=${entry.id}`,
+                        duration: getSecondsFromMS(entry.duration),
                     })
             );
-            const videosInfo = await getVideoInfo(songs.map(song => song.id).toString());
-            videosInfo.forEach((info, i) => {
-                songs[i].duration = toSeconds(parse(info.contentDetails.duration));
-            });
-            const isPublic = coinFlip();
+            const isPublic = true;
             const newMixtape = new Mixtape({
                 name: playlist.title,
                 collaborators: [],
