@@ -11,38 +11,19 @@ function UserSearchResults(props) {
     const [users, setUsers] = useState(null);
     const [totalPages, setTotalPages] = useState(1);
     const [totalResults, setTotalResults] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
-        const page = new URLSearchParams(props.location.search).get('page');
-        userSearch(new URLSearchParams(props.location.search).get('query'), page)
+        userSearch(new URLSearchParams(props.location.search).get('query'), currentPage)
         .then(res => {
             setUsers(res.results);
             setTotalPages(res.totalPages);
             setTotalResults(res.totalResults);
-            let currentPage;
-            if (page && page <= res.totalPages) {
-                currentPage = page;
-            } else {
-                currentPage = 1;
-            }
-            history.push({
-                pathname: '/search/users',
-                search: `?query=${new URLSearchParams(props.location.search).get('query')}&page=${currentPage}`
-            });
         });
-    }, [props.location.search]);
+    }, [currentPage]);
 
     const changePageHandler = (event, pageNumber) => {
-        let newPageNumber;
-        if (typeof(pageNumber) === 'string') { // weird hack to make material ui paginate component work for going to next page
-            newPageNumber = Number(new URLSearchParams(props.location.search).get('page')) + 1;
-        } else {
-            newPageNumber = pageNumber;
-        }
-        history.push({
-            pathname: '/search/users',
-            search: `?query=${new URLSearchParams(props.location.search).get('query')}&page=${newPageNumber}`
-        });
+        setCurrentPage(pageNumber)
     }
 
     if (users) {
@@ -51,14 +32,14 @@ function UserSearchResults(props) {
                 <Typography style={{color: 'white'}} variant="h5">Search results for "{new URLSearchParams(props.location.search).get('query')}" ({totalResults}):</Typography>
                 {totalPages > 1 ?
                     <Paper style={{display: 'inline-block'}}>
-                        <Pagination count={totalPages} page={new URLSearchParams(props.location.search).get('page')} onChange={changePageHandler} />
+                        <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
                     </Paper>
                     : undefined
                 }
                 <UserList users={users} usersToExclude={props.usersToExclude} />
                 {totalPages > 1 ?
                     <Paper style={{display: 'inline-block'}}>
-                        <Pagination count={totalPages} page={new URLSearchParams(props.location.search).get('page')} onChange={changePageHandler} />
+                        <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
                     </Paper>
                     : undefined
                 }
