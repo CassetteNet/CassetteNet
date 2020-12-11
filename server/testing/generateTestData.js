@@ -6,6 +6,7 @@ const { parse, toSeconds } = require('iso8601-duration');
 const Avatar = require('avatar-builder');
 const { getPlaylistVideos, getVideoInfo } = require('../external_apis/youtube');
 const userTestData = require('./users.json');
+const { Mixtape, User } = require('../models');
 
 const NUM_OF_USERS = 50;
 
@@ -91,7 +92,7 @@ async function generateMixtapes() {
                     .map(entry => ({
                         name: entry.snippet.title,
                         id: entry.snippet.resourceId.videoId,
-                        coverImage: entry.snippet.thumbnails.default.url,
+                        coverImage: entry.snippet?.thumbnails?.default.url,
                         type: 'youtube',
                         playbackUrl: `https://www.youtube.com/watch?v=${entry.snippet.resourceId.videoId}`,
                     })
@@ -101,13 +102,14 @@ async function generateMixtapes() {
                 songs[i].duration = toSeconds(parse(info.contentDetails.duration));
             });
             const isPublic = coinFlip();
-            mixtapes.push({
-                _id: ObjectId(),
+            const newMixtape = new Mixtape({
                 name: playlist.title,
                 collaborators: [],
                 songs,
                 isPublic,
-            })
+            });
+            await newMixtape.save();
+            mixtapes.push(newMixtape);
         } catch (err) {
             console.log(err);
         }
@@ -142,10 +144,8 @@ async function generateUsers(count) {
             ), 32), 8),
         128, 128);
         const profilePictureData = await avatar.create(username);
-        users.push({
-            _id: ObjectId(),
+        const u = {
             username,
-            password,
             email,
             verified,
             favoritedMixtapes,
@@ -156,14 +156,14 @@ async function generateUsers(count) {
                 data: profilePictureData,
                 contentType: 'image/png'
             }
-        });
+        };
+        const newUser = await User.register(u, password);
+        users.push(newUser);
     }
     return users;
 }
 
-async function generateTestData() {
-    const mixtapes = await generateMixtapes();
-    const users = await generateUsers(NUM_OF_USERS);
+async function generateTestData(mixtapes, users) {
     const inboxMessages = []; // to be filled in later
 
     for (const mixtape of mixtapes) {
@@ -187,6 +187,7 @@ async function generateTestData() {
             const userIndex = randInt(0, users.length);
             mixtape.collaborators = [ { user: Types.ObjectId(users[userIndex]._id), username: users[userIndex].username, permissions: 'owner'} ];
         }
+        await mixtape.save();
     }
 
     for (const user of users) {
@@ -209,6 +210,8 @@ async function generateTestData() {
             followedUsers.add(users[followUser]._id);
         }
         user.followedUsers = Array.from(followedUsers);
+
+        await user.save();
 
         // GENERATE INBOX MESSAGES
         const inboxCount = randInt(MIN_ANONYMOUS_INBOX_MESSAGES_PER_USER, MAX_ANONYMOUS_INBOX_MESSAGES_PER_USER);
@@ -249,4 +252,4 @@ async function generateTestData() {
     }
 }
 
-module.exports = generateTestData;
+module.exports = { generateUsers, generateMixtapes, generateTestData };
