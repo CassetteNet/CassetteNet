@@ -10,6 +10,36 @@ const PAGINATION_COUNT = process.env.PAGINATION_COUNT || 10;
 
 const router = express.Router();
 
+router.get('/followedUserActivity', async (req, res) => {
+    if (!req.user) return res.status(403).send('unauthorized');
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // exclude hour/mins/seconds since we want today's activities
+    const unfilteredActivities = await UserActivity.find({
+        createdAt: { 
+            $gte: today 
+        },
+        user: {
+            $in: req.user.followedUsers
+        },
+    }).lean();
+    const activities = [];
+    
+    for (const activity of unfilteredActivities) {
+        if (activities.length > 20) {
+            break;
+        }
+        if (activity.action === USER_ACTIVITIES.CREATE_MIXTAPE || activity.action === USER_ACTIVITIES.FAVORITE_MIXTAPE) {
+            let mixtape = await Mixtape.findById(activity.target);
+            if (!mixtape.isPublic && !mixtape.collaborators.filter(c => c.user).includes(req.user._id)) {
+                continue;
+            }
+        } // else if (activity.action === USER_ACTIVITIES.CREATE_LISTENING_ROOM) TODO: implement listening room public/private
+        activities.push(activity);
+    }
+
+    res.send(activities);
+});
+
 router.get('/search', async (req, res) => {
     const { query, page } = req.query;
     if (!query) return res.send([]);
