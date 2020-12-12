@@ -11,7 +11,7 @@ const PAGINATION_COUNT = process.env.PAGINATION_COUNT || 10;
 const router = express.Router();
 
 router.get('/followedUserActivity', async (req, res) => {
-    if (!req.user) return res.status(403).send('unauthorized');
+    if (!req.user) return res.status(401).send('unauthorized');
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // exclude hour/mins/seconds since we want today's activities
     const unfilteredActivities = await UserActivity.find({
@@ -34,7 +34,8 @@ router.get('/followedUserActivity', async (req, res) => {
                 continue;
             }
         } // else if (activity.action === USER_ACTIVITIES.CREATE_LISTENING_ROOM) TODO: implement listening room public/private
-        activities.push(activity);
+        const user = await User.findById(activity.user);
+        activities.push({ username: user.username, ...activity });
     }
 
     res.send(activities);
@@ -135,6 +136,7 @@ router.put('/favoriteMixtape', async (req, res) => {
     await UserActivity.create({ // use await because i'm not sure if the transaction is prone to race conditions with /unfavorite mixtape
         action: USER_ACTIVITIES.FAVORITE_MIXTAPE,
         target: id,
+        targetUrl: `/mixtape/${id}`,
         user: req.user._id,
     });
     return res.send(user.favoritedMixtapes);
@@ -151,6 +153,7 @@ router.put('/unfavoriteMixtape', async (req, res) => {
     await UserActivity.deleteOne({
         action: USER_ACTIVITIES.FAVORITE_MIXTAPE,
         target: id,
+        targetUrl: `/mixtape/${id}`,
         user: req.user._id,
     });
     return res.send(user.favoritedMixtapes);

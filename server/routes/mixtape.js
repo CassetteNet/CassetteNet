@@ -9,22 +9,6 @@ const PAGINATION_COUNT = process.env.PAGINATION_COUNT || 10;
 
 const router = express.Router();
 
-/**
- * Determines whether a given user has permission to view a given mixtape
- * @param {*} user 
- * @param {*} mixtape 
- */
-function isAuthorized(user, mixtape) {
-    if (mixtape.isPublic) return true;
-    if (!user) return false;
-    for (const collaborator of mixtape.collaborators) {
-        if (collaborator.user.equals(user._id)) {
-            return true;
-        }
-    }
-    return false;
-}
-
 
 /**
  * Fisher-Yates algorithm for shuffling arrays
@@ -167,9 +151,10 @@ router.post('/', async (req, res) => {
         isPublic: true // TODO: set default to false, true for now to make testing easier
     };
     const mixtapeObject = await Mixtape.create(mixtape);
-    UserActivity.create({
+    await UserActivity.create({
         action: USER_ACTIVITIES.CREATE_MIXTAPE,
         target: mixtapeObject._id,
+        targetUrl: `/mixtape/${mixtapeObject._id}`,
         user: req.user._id,
     });
     return res.send(mixtapeObject);
@@ -234,6 +219,11 @@ router.delete('/:id', async (req, res) => {
         user.favoritedMixtapes = newarr;
         user.save();
     }
+    await UserActivity.deleteOne({
+        action: USER_ACTIVITIES.CREATE_MIXTAPE,
+        target: mixtape._id,
+        targetUrl: `/mixtape/${mixtape._id}`,
+    });
     return res.send(mixtape);
 });
 

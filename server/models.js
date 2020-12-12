@@ -53,6 +53,7 @@ userSchema.plugin(mongoosePaginate);
 const userActivitySchema = new Schema({
   action: String,
   target: mongoose.Types.ObjectId,
+  targetUrl: String, // link to mixtape/listeningroom/etc
   user: mongoose.Types.ObjectId,
 }, { timestamps: true });
 
