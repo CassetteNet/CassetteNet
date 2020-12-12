@@ -44,6 +44,9 @@ router.get('/followedUserActivity', async (req, res) => {
             } else if (!listeningRoom.isPublic && !listeningRoom.invitedUsers.includes(req.user._id)) {
                 continue;
             }
+        } else if (activity.action === USER_ACTIVITIES.FOLLOW_USER) {
+            const followedUser = await User.findById(activity.target).lean();
+            activity.action = `${activity.action} ${followedUser.username}.`
         }
         const user = await User.findById(activity.user);
         activities.push({ username: user.username, ...activity });
@@ -196,6 +199,12 @@ router.put('/followUser', async (req, res) => {
             followers: followedUser.followers, 
         });
     }
+    await UserActivity.create({
+        action: USER_ACTIVITIES.FOLLOW_USER,
+        target: id,
+        targetUrl: `/user/${id}`,
+        user: req.user._id,
+    });
     return res.send(followedUsersDenormalized);
 });
 
@@ -226,6 +235,12 @@ router.put('/unfollowUser', async (req, res) => {
             followers: followedUser.followers, 
         });
     }
+    await UserActivity.deleteOne({
+        action: USER_ACTIVITIES.FOLLOW_USER,
+        target: id,
+        targetUrl: `/user/${id}`,
+        user: req.user._id,
+    });
     return res.send(followedUsersDenormalized);
 });
 

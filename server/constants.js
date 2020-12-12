@@ -3,6 +3,7 @@ const USER_ACTIVITIES = {
     FAVORITE_MIXTAPE: 'favorited a mixtape.',
     CREATE_LISTENING_ROOM: 'created a listening room.',
     COMMENT_ON_MIXTAPE: 'commented on a mixtape.',
+    FOLLOW_USER: 'followed',
 };
 
 module.exports = {
