@@ -2,7 +2,8 @@ const express = require('express');
 const avatars = require('avatars');
 const jimp = require('jimp');
 const { Types } = require('mongoose');
-const { InboxMessage, Mixtape, User } = require('../models');
+const { InboxMessage, Mixtape, User, UserActivity } = require('../models');
+const { USER_ACTIVITIES } = require('../constants');
 
 // how many results per page when searching
 const PAGINATION_COUNT = process.env.PAGINATION_COUNT || 10;
@@ -101,6 +102,11 @@ router.put('/favoriteMixtape', async (req, res) => {
         user.favoritedMixtapes.push(Types.ObjectId(id));
         await user.save();
     }
+    await UserActivity.create({ // use await because i'm not sure if the transaction is prone to race conditions with /unfavorite mixtape
+        action: USER_ACTIVITIES.FAVORITE_MIXTAPE,
+        target: id,
+        user: req.user._id,
+    });
     return res.send(user.favoritedMixtapes);
 });
 
@@ -112,6 +118,11 @@ router.put('/unfavoriteMixtape', async (req, res) => {
         user.favoritedMixtapes.splice(user.favoritedMixtapes.indexOf(id), 1);
         await user.save();
     }
+    await UserActivity.deleteOne({
+        action: USER_ACTIVITIES.FAVORITE_MIXTAPE,
+        target: id,
+        user: req.user._id,
+    });
     return res.send(user.favoritedMixtapes);
 });
 

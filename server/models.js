@@ -51,10 +51,8 @@ userSchema.plugin(mongoosePaginate);
 
 
 const userActivitySchema = new Schema({
-  activity: {
-    type: String,
-    enum: Object.values(USER_ACTIVITIES),
-  },
+  action: String,
+  target: mongoose.Types.ObjectId,
   user: mongoose.Types.ObjectId,
 }, { timestamps: true });
 

@@ -168,7 +168,8 @@ router.post('/', async (req, res) => {
     };
     const mixtapeObject = await Mixtape.create(mixtape);
     UserActivity.create({
-        activity: USER_ACTIVITIES.CREATE_MIXTAPE,
+        action: USER_ACTIVITIES.CREATE_MIXTAPE,
+        target: mixtapeObject._id,
         user: req.user._id,
     });
     return res.send(mixtapeObject);
