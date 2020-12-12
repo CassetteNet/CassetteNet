@@ -28,14 +28,8 @@ function UserSearchResults(props) {
 
     if (users) {
         return (
-            <div style={{ width: "70%", margin: 'auto', marginTop: '4%' }}>
+            <div style={{ width: "70%", margin: 'auto', marginTop: '4%', marginBottom: '10%' }}>
                 <Typography style={{color: 'white'}} variant="h5">Search results for "{new URLSearchParams(props.location.search).get('query')}" ({totalResults}):</Typography>
-                {totalPages > 1 ?
-                    <Paper style={{display: 'inline-block'}}>
-                        <Pagination count={totalPages} page={currentPage} onChange={changePageHandler} />
-                    </Paper>
-                    : undefined
-                }
                 <UserList users={users} usersToExclude={props.usersToExclude} />
                 {totalPages > 1 ?
                     <Paper style={{display: 'inline-block'}}>
