@@ -2,11 +2,14 @@ const express = require('express');
 const avatars = require('avatars');
 const jimp = require('jimp');
 const { Types } = require('mongoose');
-const { InboxMessage, Mixtape, User, UserActivity } = require('../models');
+const { InboxMessage, ListeningRoom, Mixtape, User, UserActivity } = require('../models');
 const { USER_ACTIVITIES } = require('../constants');
 
 // how many results per page when searching
 const PAGINATION_COUNT = process.env.PAGINATION_COUNT || 10;
+
+// max number of activities to show in Recent Followed User Activity section of dashboard
+const MAX_USER_ACTIVITY = process.env.MAX_USER_ACTIVITY || 10;
 
 const router = express.Router();
 
@@ -21,24 +24,32 @@ router.get('/followedUserActivity', async (req, res) => {
         user: {
             $in: req.user.followedUsers
         },
-    }).lean();
+    }).sort('-createdAt').lean(); // sort so newest activity is first element
     const activities = [];
     
     for (const activity of unfilteredActivities) {
         if (activities.length > 20) {
             break;
         }
-        if (activity.action === USER_ACTIVITIES.CREATE_MIXTAPE || activity.action === USER_ACTIVITIES.FAVORITE_MIXTAPE) {
-            let mixtape = await Mixtape.findById(activity.target);
+        if (activity.action === USER_ACTIVITIES.CREATE_MIXTAPE || activity.action === USER_ACTIVITIES.FAVORITE_MIXTAPE || activity.action === USER_ACTIVITIES.COMMENT_ON_MIXTAPE) {
+            const mixtape = await Mixtape.findById(activity.target);
             if (!mixtape.isPublic && !mixtape.collaborators.filter(c => c.user).includes(req.user._id)) {
                 continue;
             }
-        } // else if (activity.action === USER_ACTIVITIES.CREATE_LISTENING_ROOM) TODO: implement listening room public/private
+        } else if (activity.action === USER_ACTIVITIES.CREATE_LISTENING_ROOM) {  // TODO: implement listening room public/private
+            const listeningRoom = await ListeningRoom.findById(activity.target);
+            if (!listeningRoom) {
+                UserActivity.deleteOne({ _id: activity._id });
+                continue;
+            } else if (!listeningRoom.isPublic && !listeningRoom.invitedUsers.includes(req.user._id)) {
+                continue;
+            }
+        }
         const user = await User.findById(activity.user);
         activities.push({ username: user.username, ...activity });
     }
 
-    res.send(activities);
+    res.send(activities.slice(0, MAX_USER_ACTIVITY));
 });
 
 router.get('/search', async (req, res) => {
