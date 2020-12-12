@@ -2,7 +2,8 @@ const express = require('express');
 const { Types } = require('mongoose');
 const textToPicture = require('text-to-picture-kazari');
 const seedrandom = require('seedrandom');
-const { Mixtape, User } = require('../models');
+const { Mixtape, User, UserActivity } = require('../models');
+const { USER_ACTIVITIES } = require('../constants');
 
 const PAGINATION_COUNT = process.env.PAGINATION_COUNT || 10;
 
@@ -166,6 +167,10 @@ router.post('/', async (req, res) => {
         isPublic: true // TODO: set default to false, true for now to make testing easier
     };
     const mixtapeObject = await Mixtape.create(mixtape);
+    UserActivity.create({
+        activity: USER_ACTIVITIES.CREATE_MIXTAPE,
+        user: req.user._id,
+    });
     return res.send(mixtapeObject);
 });
 
