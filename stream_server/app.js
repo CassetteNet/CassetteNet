@@ -10,6 +10,11 @@ const scdl = require('soundcloud-downloader').default;
 const YoutubeMp3Downloader = require('youtube-mp3-downloader');
 const AudioContext = require('web-audio-api').AudioContext;
 const MusicTempo = require('music-tempo');
+const ffmpeg = require('fluent-ffmpeg');
+const { v4: uuidv4 } = require('uuid');
+
+const runningStreams = new Map();
+
 
 // configuration for node-media-server
 const config = {
@@ -54,7 +59,7 @@ app.use('/stream', proxy(`http://localhost:${process.env.MEDIA_PORT || 8888}/`))
 app.post('/startStream', async (req, res) => {
     const { type, id, getTempo } = req.body;
     if (!type || !id) return res.status(400).send('invalid request');
-    const filename = Date.now();
+    const filename = uuidv4();
     if (type === 'youtube') {
         const YD = new YoutubeMp3Downloader({
             "ffmpegPath": process.env.FFMPEG_PATH || '/usr/bin/ffmpeg',
@@ -93,27 +98,41 @@ app.post('/startStream', async (req, res) => {
 
                         res.json({ listeningRoomPlaybackId: filename, tempo });
 
-                        // spawn ffmpeg process to start live stream
-                        const ffmpegStreamProcess = child_process.spawn('ffmpeg', [`-re -i "${path.join(__dirname, `mp3/${filename}.mp3`)}" -c:v libx264 -preset veryfast -tune zerolatency -c:a aac -ar 44100 -f flv rtmp://localhost/live/${filename}`], { shell: true });
-
-                        // remove mp3 file and streaming files after stream is over
-                        ffmpegStreamProcess.on('close', (code) => {
-                            fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
-                            fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
-                        });
+                        const command = ffmpeg()
+                            .input(`${path.join(__dirname, `mp3/${filename}.mp3`)}`)
+                            .native()
+                            .format('flv')
+                            .save(`rtmp://localhost/live/${filename}`)
+                            .on('error', (err) => {
+                                console.log(err);
+                                fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
+                                fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
+                            })
+                            .on('end', () => {
+                                fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
+                                fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
+                            });
+                        runningStreams.set(filename, command);
                     });
                 } else {
-                    // send response back to client3
+                    // send response back to client
                     res.json({ listeningRoomPlaybackId: filename });
-
-                    // spawn ffmpeg process to start live stream
-                    const ffmpegStreamProcess = child_process.spawn('ffmpeg', [`-re -i "${path.join(__dirname, `mp3/${filename}.mp3`)}" -c:v libx264 -preset veryfast -tune zerolatency -c:a aac -ar 44100 -f flv rtmp://localhost/live/${filename}`], { shell: true });
-
-                    // remove mp3 file and streaming files after stream is over
-                    ffmpegStreamProcess.on('close', (code) => {
-                        fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
-                        fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
-                    });
+                    const command = ffmpeg()
+                            .input(`${path.join(__dirname, `mp3/${filename}.mp3`)}`)
+                            .native()
+                            .format('flv')
+                            .save(`rtmp://localhost/live/${filename}`)
+                            .on('progress', p => undefined)
+                            .on('error', (err) => {
+                                console.log(err);
+                                fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
+                                fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
+                            })
+                            .on('end', () => {
+                                fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
+                                fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
+                            });
+                    runningStreams.set(filename, command);
                 }
                 
             }
@@ -144,32 +163,60 @@ app.post('/startStream', async (req, res) => {
                     const tempoData = new MusicTempo(audioData);
                     res.json({ listeningRoomPlaybackId: filename, tempo: tempoData.tempo });
 
-                    // spawn ffmpeg process to start live stream
-                    const ffmpegStreamProcess = child_process.spawn('ffmpeg', [`-re -i "${path.join(__dirname, `mp3/${filename}.mp3`)}" -c:v libx264 -preset veryfast -tune zerolatency -c:a aac -ar 44100 -f flv rtmp://localhost/live/${filename}`], { shell: true });
-
-                    // remove mp3 file and streaming files after stream is over
-                    ffmpegStreamProcess.on('close', (code) => {
-                        fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
-                        fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
-                    });
+                    const command = ffmpeg()
+                            .input(`${path.join(__dirname, `mp3/${filename}.mp3`)}`)
+                            .native()
+                            .format('flv')
+                            .save(`rtmp://localhost/live/${filename}`)
+                            .on('error', (err) => {
+                                console.log(err);
+                                fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
+                                fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
+                            })
+                            .on('end', () => {
+                                fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
+                                fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
+                            });
+                    runningStreams.set(filename, command);
                 });
             } else {
                 // send response back to client3
                 res.json({ listeningRoomPlaybackId: filename });
 
-                // spawn ffmpeg process to start live stream
-                const ffmpegStreamProcess = child_process.spawn('ffmpeg', [`-re -i "${path.join(__dirname, `mp3/${filename}.mp3`)}" -c:v libx264 -preset veryfast -tune zerolatency -c:a aac -ar 44100 -f flv rtmp://localhost/live/${filename}`], { shell: true });
-                // remove mp3 file and streaming files after stream is over
-                ffmpegStreamProcess.on('close', (code) => {
-                    fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
-                    fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, () => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
-                });
+                const command = ffmpeg()
+                            .input(`${path.join(__dirname, `mp3/${filename}.mp3`)}`)
+                            .native()
+                            .format('flv')
+                            .save(`rtmp://localhost/live/${filename}`)
+                            .on('error', (err) => {
+                                console.log(err);
+                                fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
+                                fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
+                            })
+                            .on('end', () => {
+                                fs.unlink(path.join(__dirname, `mp3/${filename}.mp3`), () => console.log(`Removed file '${path.join(__dirname, `mp3/${filename}.mp3`)}'.`));
+                                fs.rmdir(path.join(__dirname, `mp3/live/${filename}`), { recursive: true }, (e) => console.log(`Removed folder '${path.join(__dirname, `mp3/live/${filename}`)}'.`));
+                            });
+                runningStreams.set(filename, command);
             }
         });
     } 
     else {
         return resp.status(400).send('invalid request.');
     }
+});
+
+app.delete('/stopStream/:id', (req, res) => {
+    const { id } = req.params;
+    const ffmpegProcess = runningStreams.get(req.params.id);
+    if (ffmpegProcess) {
+        runningStreams.get(req.params.id).kill();
+        res.send(req.params.id);
+        runningStreams.delete(req.params.id);
+    } else {
+        res.status(404).send('stream not found.');
+    }
+    
 });
 
 app.get('/', (req, res) => res.sendFile('index.html', { root: path.join(__dirname, 'public') }));

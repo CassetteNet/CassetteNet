@@ -122,9 +122,10 @@ router.post('/', async (req, res) => {
 
     const { listeningRoomPlaybackId } = stream.data;
 
-    const listeningRoomPlaybackUrl = new URL(`/stream/live/${listeningRoomPlaybackId}.flv`, STREAM_SERVER_ROOT_URL).href;
+    const listeningRoomPlaybackUrl = new URL(`/stream/live/${listeningRoomPlaybackId}/index.m3u8`, STREAM_SERVER_ROOT_URL).href;
 
     mixtape.songs[0].listeningRoomPlaybackUrl = listeningRoomPlaybackUrl;
+    mixtape.songs[0].listeningRoomStreamId = listeningRoomPlaybackId;
 
     listeningRoom.mixtape = mixtape;
 
