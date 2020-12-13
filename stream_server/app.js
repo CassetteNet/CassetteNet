@@ -1,4 +1,3 @@
-const child_process = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
@@ -62,12 +61,12 @@ app.post('/startStream', async (req, res) => {
     const filename = uuidv4();
     if (type === 'youtube') {
         const YD = new YoutubeMp3Downloader({
-            "ffmpegPath": process.env.FFMPEG_PATH || '/usr/bin/ffmpeg',
-            "outputPath": path.join(__dirname, 'mp3'),
-            "youtubeVideoQuality": "lowestaudio",
-            "queueParallelism": 1,
-            "progressTimeout": 2000,
-            "allowWebm": false
+            'ffmpegPath': process.env.FFMPEG_PATH || '/usr/bin/ffmpeg',
+            'outputPath': path.join(__dirname, 'mp3'),
+            'youtubeVideoQuality': 'lowestaudio',
+            'queueParallelism': 1,
+            'progressTimeout': 2000,
+            'allowWebm': false
         });
         YD.download(id, `${filename}.mp3`);
         // YD.on('error', (err) => res.status(500).send(err));
@@ -202,7 +201,7 @@ app.post('/startStream', async (req, res) => {
         });
     } 
     else {
-        return resp.status(400).send('invalid request.');
+        return res.status(400).send('invalid request.');
     }
 });
 
