@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import { Button, Grid, Typography, makeStyles, IconButton } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import AccountCircle from '@material-ui/icons/AccountCircle';
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  TextField,
+  Typography,
+  makeStyles,
+  IconButton
+} from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { Alert } from '@material-ui/lab';
 import { useHistory } from 'react-router-dom';
 import { userLogin, oauthLogin, requestPasswordReset } from '../../utils/api';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import GoogleButton from 'react-google-button';
 import { FacebookLoginButton } from "react-social-login-buttons";
 
@@ -54,10 +60,19 @@ function LoginPage(props) {
     }
   }
 
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [invalidForgotPasswordEmail, setInvalidForgotPasswordEmail] = useState(false);
+  const handleResetPasswordEmail = (e) => {
+    if (invalidForgotPasswordEmail) {
+      setInvalidForgotPasswordEmail(false);
+    }
+    setForgotPasswordEmail(e.target.value);
+  }
+
   const forgotPassword = async (email) => {
     requestPasswordReset(email)
       .then(res => alert('Password reset email sent.'))
-      .catch(err => alert(err));
+      .catch(err => setInvalidForgotPasswordEmail(true));
   }
 
   const history = useHistory();
@@ -89,9 +104,12 @@ function LoginPage(props) {
             label="Email"
             type="email"
             fullWidth
-            onChange={handleEmail}
-            value={email}
+            onChange={handleResetPasswordEmail}
+            value={forgotPasswordEmail}
           />
+          {invalidForgotPasswordEmail ?
+          <Alert severity="error">A user with that email does not exist.</Alert>
+          : undefined}
         </DialogContent>
         <DialogActions>
           <Button align="center" onClick={() => forgotPassword(email)} color="primary">
