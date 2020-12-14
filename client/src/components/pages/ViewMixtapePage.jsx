@@ -328,7 +328,7 @@ function ViewMixtapePage(props) {
         }
     }
 
-    const [createListeningRoomModalOpen, setCreateListeningRoomModalOpen] = useState(true);
+    const [createListeningRoomModalOpen, setCreateListeningRoomModalOpen] = useState(false);
 
     const createListeningRoomButtonHandler = () => {
         if (mixtape) {
