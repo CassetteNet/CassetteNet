@@ -238,11 +238,16 @@ function ListeningRoomPage(props) {
         setScreen('snake');
     }
 
+    const changeListeningRoomSong = (index) => {
+        if (user._id === listeningRoom?.owner.user) {
+            setPlaying(false);
+            socket.emit('changeSong', index);
+        }
+    }
+
     if (!listeningRoom) {
         return null;
     }
-
-    console.log(scores);
 
     return (
         <div>
@@ -265,7 +270,7 @@ function ListeningRoomPage(props) {
                                     </Typography>
                                     <Typography variant="h5">~Listening to {mixtape?.name}~</Typography>
                                 </Paper>
-                                <Mixtape mixtape={mixtape} enableEditing={false} listeningRoom={true} />
+                                <Mixtape mixtape={mixtape} enableEditing={false} listeningRoom={true} changeListeningRoomSong={changeListeningRoomSong} />
                             </Grid>
                             <Grid item xs={1} />
                             <Grid item xs={3} style={{ backgroundColor: '#ACDCFF', height: '100%' }}>
