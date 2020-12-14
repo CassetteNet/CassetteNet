@@ -97,8 +97,10 @@ function initSockets(io) {
             const listeningRoom = await ListeningRoom.findById(roomId);
             if (listeningRoom && listeningRoom.owner && listeningRoom.owner.equals(user._id)) {
                 if (listeningRoom.mixtape.songs[listeningRoom.currentSong].listeningRoomStreamId) { // stop current stream if it exists
+                    console.log(`attempting to stop stream ${listeningRoom.mixtape.songs[listeningRoom.currentSong].listeningRoomStreamId}...`);
                     axios.delete(new URL(`/stopStream/${listeningRoom.mixtape.songs[listeningRoom.currentSong].listeningRoomStreamId}`, STREAM_SERVER_ROOT_URL).href)
-                        .catch(err => console.log(`failed to stop stream ${listeningRoom.mixtape.songs[listeningRoom.currentSong].listeningRoomStreamId}. it may not exist.`));
+                        .catch(err => console.log(`failed to stop stream ${listeningRoom.mixtape.songs[listeningRoom.currentSong].listeningRoomStreamId}. it may not exist.`))
+                        .then(() => console.log(`successfully stopped stream ${listeningRoom.mixtape.songs[listeningRoom.currentSong].listeningRoomStreamId}.`));
                 }
                 listeningRoom.currentSong = index;
                 if (listeningRoom.rhythmGameQueue.length > 0) {

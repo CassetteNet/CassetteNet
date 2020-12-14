@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Backdrop, Divider, Modal, Fade, Grid, Typography, Button, FormControlLabel, Switch, CircularProgress } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import { Delete as DeleteIcon } from '@material-ui/icons';
 import { blueGrey } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
@@ -28,20 +28,24 @@ function CreateListeningRoomModal({ open, setOpen, mixtape }) {
 
     const [loading, setLoading] = useState(false);
 
+    const [inviteOnly, setInviteOnly] = useState(false);
+
     const handleInviteUser = (user) => {
         if (!invitedUsers.includes(user) && user.username && user._id) {
             setInvitedUsers([user, ...invitedUsers]);
         }
     }
 
+    const handleDontInviteUser = (user) => {
+        setInvitedUsers(invitedUsers.filter(u => u._id !== user._id));
+    }
+
     const createListeningRoomHandler = () => {
         setLoading(true);
-        createListeningRoom(mixtape._id)
+        createListeningRoom(mixtape._id, !inviteOnly, invitedUsers)
             .then(listeningRoomId => history.push(`/listeningRoom/${listeningRoomId}`))
             .catch(err => alert(err));
     }
-
-    const [isPublic, setIsPublic] = useState(false);
 
     return (
         <Modal
@@ -64,8 +68,8 @@ function CreateListeningRoomModal({ open, setOpen, mixtape }) {
                     </Grid>
                     <Grid item xs={6}>
                         <FormControlLabel
-                            control={<Switch checked={isPublic} onChange={() => setIsPublic(!isPublic)} />}
-                            label={isPublic ? 'Only invited users can join' : 'Anyone with the link can join'}
+                            control={<Switch disabled={loading} checked={inviteOnly} onChange={() => setInviteOnly(!inviteOnly)} />}
+                            label={inviteOnly ? 'Only invited users can join' : 'Anyone with the link can join'}
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -74,7 +78,7 @@ function CreateListeningRoomModal({ open, setOpen, mixtape }) {
                     <Grid item xs={6} justifyContent="center">
                         <Typography align="center" variant="h6">Send invites?:</Typography>
                         <br />
-                        <UserSearchBar disableClearable={true} style={{ display: 'inline-block' }} userSelectHandler={(user) => handleInviteUser(user)} />
+                        <UserSearchBar disabled={loading} disableClearable style={{ display: 'inline-block' }} userSelectHandler={(user) => handleInviteUser(user)} />
                     </Grid>
                     <Grid item xs={1} />
                     <Grid item xs={4} style={{ height: '25%', overflow: 'auto' }}>
@@ -100,11 +104,9 @@ function CreateListeningRoomModal({ open, setOpen, mixtape }) {
                                         <Grid item xs={10} align="center">
                                             {user?.username}
                                         </Grid>
-                                        {/* <Grid item xs={1}>
-                                     {!added[result.id] ?
-                                         <AddIcon onClick={() => addSongHandler(result)} />
-                                         : <span>Added!</span>}
-                                 </Grid> */}
+                                        <Grid item xs={1}>
+                                            <DeleteIcon onClick={() => handleDontInviteUser(user)} />
+                                        </Grid>
                                     </Grid>
                                 </Box>
                             ))}

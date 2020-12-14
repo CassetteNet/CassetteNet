@@ -9,7 +9,7 @@ function UserSearchBar(props) {
   const [options, setOptions] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
-  const { userSelectHandler, disableClearable } = props;
+  const { userSelectHandler, disableClearable, disabled } = props;
 
   useEffect(() => {
     if (!searchQuery) {
@@ -34,6 +34,7 @@ function UserSearchBar(props) {
   return (
     <Grid container justify="center" alignItems="center">
       <Autocomplete
+        disabled={disabled}
         style={{ width: 300 }}
         clearOnEscape={true}
         disableClearable={disableClearable}
@@ -48,6 +49,7 @@ function UserSearchBar(props) {
         renderInput={(params) => (
           <TextField
             {...params}
+            disabled={disabled}
             onKeyPress={() => setLoading(true)}
             onBlur={() => setLoading(false)}
             onChange={(e) => search(e)}
