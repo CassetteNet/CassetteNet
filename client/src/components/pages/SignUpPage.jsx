@@ -4,6 +4,7 @@ import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
 import InfoIcon from '@material-ui/icons/Info';
 import { useHistory } from 'react-router-dom';
 import { userSignup } from '../../utils/api';
+import passwordValidator from 'password-validator';
 
 function SignUpPage(props) {
   const [username, setUsername] = useState('');
@@ -23,8 +24,7 @@ function SignUpPage(props) {
     return (username.length >= 4 && username.length <= 12 && username[0] != '#') ;
   }
 
-  var passwordValidator = require('password-validator');
-  var schema = new passwordValidator();
+  const schema = new passwordValidator();
   schema
   .is().min(8)                                    // Minimum length 8
   .is().max(100)                                  // Maximum length 100

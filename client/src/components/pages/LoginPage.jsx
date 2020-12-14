@@ -18,7 +18,7 @@ import { useHistory } from 'react-router-dom';
 import { userLogin, oauthLogin, requestPasswordReset } from '../../utils/api';
 
 import GoogleButton from 'react-google-button';
-import { FacebookLoginButton } from "react-social-login-buttons";
+import { FacebookLoginButton } from 'react-social-login-buttons';
 
 function LoginPage(props) {
   const useStyles = makeStyles((theme) => ({
@@ -51,14 +51,16 @@ function LoginPage(props) {
       history.push('/login/success');
     } catch (err) {
       if (err?.response?.status === 401) {
-        alert('Incorrect email or password');
+        setLoginError('Incorrect email or password.');
       } else if (err?.response?.status === 400) {
-        alert('Please verify your account.')
+        setLoginError('Please verify your account.');
       } else {
-        alert('Error logging in. Please try again later.')
+        setLoginError('Error logging in. Please try again later.')
       }
     }
   }
+
+  const [loginError, setLoginError] = useState(null);
 
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
   const [invalidForgotPasswordEmail, setInvalidForgotPasswordEmail] = useState(false);
@@ -69,8 +71,8 @@ function LoginPage(props) {
     setForgotPasswordEmail(e.target.value);
   }
 
-  const forgotPassword = async (email) => {
-    requestPasswordReset(email)
+  const forgotPassword = async () => {
+    requestPasswordReset(forgotPasswordEmail)
       .then(res => alert('Password reset email sent.'))
       .catch(err => setInvalidForgotPasswordEmail(true));
   }
@@ -112,7 +114,7 @@ function LoginPage(props) {
           : undefined}
         </DialogContent>
         <DialogActions>
-          <Button align="center" onClick={() => forgotPassword(email)} color="primary">
+          <Button align="center" onClick={forgotPassword} color="primary">
             OK
           </Button>
         </DialogActions>
@@ -130,6 +132,10 @@ function LoginPage(props) {
               <span>Sign in with Facebook</span>
             </FacebookLoginButton>
           </Grid>
+          <Typography variant="h6">OR</Typography>
+          {loginError ?
+            <Alert severity="error">{loginError}</Alert>
+          : undefined}
           <Grid item>
             <TextField
               className={classes.margin}
