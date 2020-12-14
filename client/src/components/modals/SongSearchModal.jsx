@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Backdrop, Box, Modal, Fade, Grid, Typography, Button, CircularProgress } from '@material-ui/core';
+import { Backdrop, Box, Modal, Fade, Grid, Typography, Button, CircularProgress, NativeSelect, MenuItem, withStyles, InputBase } from '@material-ui/core';
 import { Add as AddIcon } from '@material-ui/icons';
 import { Pagination } from '@material-ui/lab';
 import { blueGrey } from '@material-ui/core/colors';
@@ -7,9 +7,44 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchBar from 'material-ui-search-bar';
 import { songSearch } from '../../utils/api';
 
+const BootstrapInput = withStyles((theme) => ({
+    root: {
+        'label + &': {
+            marginTop: theme.spacing(3),
+        },
+    },
+    input: {
+        borderRadius: 4,
+        position: 'relative',
+        backgroundColor: theme.palette.background.paper,
+        border: '1px solid #ced4da',
+        fontSize: 16,
+        padding: '10px 26px 10px 12px',
+        transition: theme.transitions.create(['border-color', 'box-shadow']),
+        // Use the system font instead of the default Roboto font.
+        fontFamily: [
+            '-apple-system',
+            'BlinkMacSystemFont',
+            '"Segoe UI"',
+            'Roboto',
+            '"Helvetica Neue"',
+            'Arial',
+            'sans-serif',
+            '"Apple Color Emoji"',
+            '"Segoe UI Emoji"',
+            '"Segoe UI Symbol"',
+        ].join(','),
+        '&:focus': {
+            borderRadius: 4,
+            borderColor: '#80bdff',
+            boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+        },
+    },
+}))(InputBase);
+
 const Results = ({ results, addSongs, songsToAdd, setSongsToAdd }) => {
     const [added, setAdded] = useState({});
-    
+
 
     const addSongHandler = (song) => {
         const newAdded = { ...added };
@@ -20,35 +55,35 @@ const Results = ({ results, addSongs, songsToAdd, setSongsToAdd }) => {
 
     return (
         <>
-        {results?.map((result, i) => (
-            <Box
-                style={{
-                    margin: "5px",
-                    padding: "10px",
-                    backgroundColor: blueGrey[700],
-                    display: "flex",
-                    flexDirection: "row",
-                    borderRadius: 6,
-                    color: 'white',
-                    fontSize: '1em',
-                }}
-                key={i}
-            >
-                <Grid container>
-                    <Grid item xs={1} align="left" style={{ cursor: 'pointer' }}>
-                        <img width="100%" style={{ objectFit: 'contain' }} src={result.coverImage} />
+            {results?.map((result, i) => (
+                <Box
+                    style={{
+                        margin: "5px",
+                        padding: "10px",
+                        backgroundColor: blueGrey[700],
+                        display: "flex",
+                        flexDirection: "row",
+                        borderRadius: 6,
+                        color: 'white',
+                        fontSize: '1em',
+                    }}
+                    key={i}
+                >
+                    <Grid container>
+                        <Grid item xs={1} align="left" style={{ cursor: 'pointer' }}>
+                            <img width="100%" style={{ objectFit: 'contain' }} src={result.coverImage} />
+                        </Grid>
+                        <Grid item xs={10} align="center">
+                            {result.name}
+                        </Grid>
+                        <Grid item xs={1}>
+                            {!added[result.id] ?
+                                <AddIcon onClick={() => addSongHandler(result)} />
+                                : <span>Added!</span>}
+                        </Grid>
                     </Grid>
-                    <Grid item xs={10} align="center">
-                        {result.name}
-                    </Grid>
-                    <Grid item xs={1}>
-                        {!added[result.id] ?
-                        <AddIcon onClick={() => addSongHandler(result)} />
-                        : <span>Added!</span>}
-                    </Grid>
-                </Grid>
-            </Box>
-        ))}
+                </Box>
+            ))}
         </>
     )
 };
@@ -73,7 +108,7 @@ function SongSearchModal({ open, setOpen, addSongs, mixtape }) {
 
     const [songsToAdd, setSongsToAdd] = useState([]);
 
-    const api = 'youtube';
+    const [api, setApi] = useState('youtube');
 
     const handleSearch = () => {
         setResults(null);
@@ -127,13 +162,12 @@ function SongSearchModal({ open, setOpen, addSongs, mixtape }) {
             }}
         >
             <Fade in={open}>
-                <Grid container justify="center" style={{ backgroundColor: blueGrey[400], height: '85%', width: '60%' }}>
-                    {/* <div style={{margin: '1px'}}> */}
+                <Grid container justify="center" alignItems="center" style={{ backgroundColor: blueGrey[400], height: '85%', width: '60%' }}>
                     <Grid item xs={12}>
                         <Typography align="center" variant="h3">Add a song</Typography>
                     </Grid>
                     <Grid item xs={1} />
-                    <Grid item xs={10}>
+                    <Grid item xs={7}>
                         <SearchBar
                             value={searchQuery}
                             onChange={handleSearchChange}
@@ -142,14 +176,28 @@ function SongSearchModal({ open, setOpen, addSongs, mixtape }) {
                         />
                     </Grid>
                     <Grid item xs={1} />
+                    <Grid item xs={2}>
+                        <NativeSelect
+                            style={{ height: '100%', top: '0px' }}
+                            variant="filled"
+                            value={api}
+                            onChange={(e) => setApi(e.target.value)}
+                            input={<BootstrapInput />}
+                        >
+                            <option value="" />
+                            <option value={'youtube'}>YouTube</option>
+                            <option value={'soundcloud'}>SoundCloud</option>
+                        </NativeSelect>
+                    </Grid>
+                    <Grid item xs={1} />
 
                     <Grid item xs={1} />
-                    <Grid item xs={10} justify="center" style={{overflow: 'auto', height: '60%'}}>
+                    <Grid item xs={10} justify="center" style={{ overflow: 'auto', height: '60%' }}>
                         {
-                        !loading ?
-                            <Results results={results ? results[currentPage] : []} addSongs={addSongs} songsToAdd={songsToAdd} setSongsToAdd={setSongsToAdd} />
-                        :
-                            <CircularProgress />
+                            !loading ?
+                                <Results results={results ? results[currentPage] : []} addSongs={addSongs} songsToAdd={songsToAdd} setSongsToAdd={setSongsToAdd} />
+                                :
+                                <CircularProgress />
                         }
                     </Grid>
                     <Grid item xs={1} />
