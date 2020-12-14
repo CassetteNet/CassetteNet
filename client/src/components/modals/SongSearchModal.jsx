@@ -201,7 +201,11 @@ function SongSearchModal({ open, setOpen, addSongs, mixtape }) {
                         }
                     </Grid>
                     <Grid item xs={1} />
-                    <Pagination count={results ? results[currentPage].length === 0 ? Object.keys(results).length : Object.keys(results).length + 1 : 1} disabled={loading || !results} page={currentPage} onChange={handleChangePage} />
+                    {
+                        api === 'youtube' ?
+                            <Pagination count={results ? results[currentPage].length === 0 ? Object.keys(results).length : Object.keys(results).length + 1 : 1} disabled={loading || !results} page={currentPage} onChange={handleChangePage} />
+                            : undefined
+                    }
                 </Grid>
             </Fade>
         </Modal >
