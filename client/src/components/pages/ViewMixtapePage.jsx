@@ -92,14 +92,21 @@ function ViewMixtapePage(props) {
 
     const [apiToUse, setApiToUse] = useState('soundcloud');
 
-    const addSong = async (song) => {
-        if (mixtape.songs.map(s => s.id).includes(songToAdd.id)) return;
+    // add array of songs to current mixtape
+    const addSongs = async (songs) => {
+        // if (mixtape.songs.map(s => s.id).includes(song.id)) return;
         const newSongs = [...mixtape.songs];
-        const duration = await getSongDuration(song.type, song.id);
-        song.duration = duration;
-        newSongs.push(song);
-        const addSongTransaction = new AddSong_Transaction(mixtape.songs, newSongs, mixtape);
-        tps.addTransaction(addSongTransaction);
+        for (const song of songs) {
+            console.log(song)
+            if (!song.duration) {
+                const duration = await getSongDuration(song.type, song.id);
+                song.duration = duration;
+            }
+            newSongs.push(song);
+            const addSongTransaction = new AddSong_Transaction(mixtape.songs, newSongs, mixtape);
+            tps.addTransaction(addSongTransaction);
+        }
+        
         mixtape.songs = newSongs;
         setMixtape(mixtape);
         setSongToAdd({});
@@ -362,7 +369,7 @@ function ViewMixtapePage(props) {
 
     return (
         <div>
-            <SongSearchModal open={addSongPopupIsOpen} setOpen={setAddSongPopupIsOpen} addSong={addSong} />
+            <SongSearchModal open={addSongPopupIsOpen} setOpen={setAddSongPopupIsOpen} addSongs={addSongs} mixtape={mixtape} />
             <SettingsModal
                 mixtape={mixtape}
                 setMixtape={setMixtape}

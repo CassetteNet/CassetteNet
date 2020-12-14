@@ -7,18 +7,20 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchBar from 'material-ui-search-bar';
 import { songSearch } from '../../utils/api';
 
-const Results = ({ results, addSong }) => {
+const Results = ({ results, addSongs, songsToAdd, setSongsToAdd }) => {
     const [added, setAdded] = useState({});
+    
 
     const addSongHandler = (song) => {
         const newAdded = { ...added };
         newAdded[song.id] = true;
         setAdded(newAdded);
-        addSong(song);
+        setSongsToAdd([song, ...songsToAdd]);
     }
+
     return (
         <>
-        {results?.map(result => (
+        {results?.map((result, i) => (
             <Box
                 style={{
                     margin: "5px",
@@ -30,6 +32,7 @@ const Results = ({ results, addSong }) => {
                     color: 'white',
                     fontSize: '1em',
                 }}
+                key={i}
             >
                 <Grid container>
                     <Grid item xs={1} align="left" style={{ cursor: 'pointer' }}>
@@ -58,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function SongSearchModal({ open, setOpen, addSong }) {
+function SongSearchModal({ open, setOpen, addSongs, mixtape }) {
     const classes = useStyles();
 
     const [results, setResults] = useState(null);
@@ -68,10 +71,15 @@ function SongSearchModal({ open, setOpen, addSong }) {
 
     const [searchQuery, setSearchQuery] = useState('');
 
+    const [songsToAdd, setSongsToAdd] = useState([]);
+
     const api = 'youtube';
 
     const handleSearch = () => {
         setResults(null);
+        if (!searchQuery) {
+            return;
+        }
         setLoading(true);
         songSearch(api, searchQuery).then(res => {
             setResults({ 1: res });
@@ -102,11 +110,16 @@ function SongSearchModal({ open, setOpen, addSong }) {
         setCurrentPage(1);
     }
 
+    const handleClose = () => {
+        addSongs(songsToAdd);
+        setOpen(false);
+    }
+
     return (
         <Modal
             className={classes.modal}
             open={open}
-            onClose={() => setOpen(false)}
+            onClose={handleClose}
             closeAfterTransition
             BackdropComponent={Backdrop}
             BackdropProps={{
@@ -134,7 +147,7 @@ function SongSearchModal({ open, setOpen, addSong }) {
                     <Grid item xs={10} justify="center" style={{overflow: 'auto', height: '60%'}}>
                         {
                         !loading ?
-                            <Results results={results ? results[currentPage] : []} addSong={addSong} />
+                            <Results results={results ? results[currentPage] : []} addSongs={addSongs} songsToAdd={songsToAdd} setSongsToAdd={setSongsToAdd} />
                         :
                             <CircularProgress />
                         }

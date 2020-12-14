@@ -21,6 +21,7 @@ const router = express.Router();
 
 router.get('/search', async (req, res) => {
     const { q, page } = req.query;
+    if (!q) return res.status(400).send('invalid request');
     try {
         const results = await ytsr(q, { limit: 70 });
         if (!results) {
@@ -31,6 +32,7 @@ router.get('/search', async (req, res) => {
             name: result.title,
             description: result.description,
             coverImage: result.bestThumbnail.url,
+            duration: parseYtplDuration(result.duration),
             type: 'youtube',
             playbackUrl: `https://www.youtube.com/watch?v=${result.id}`,
         }));
